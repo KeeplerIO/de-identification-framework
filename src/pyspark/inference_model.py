@@ -2,11 +2,9 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 
-import time
 import json
 
 import batch_presidio as presidio
-import pandas as pd
 
 from datetime import datetime
 
@@ -43,7 +41,7 @@ def read_kafka_topic(kafka_broker, topic):
     return df_read
 
 def add_metadata(df):
-  
+ 
   batch_analyzer = presidio.BatchAnalyzerEngine()
 
   df_dict = df.toPandas().to_dict(orient="list")

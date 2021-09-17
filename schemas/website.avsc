@@ -10,7 +10,7 @@
                     }
                 ],
                 "inference_method": "presidio",
-                "last_inference_date": "2021-09-17 10:08:20.196699",
+                "last_inference_date": "2021-09-17 14:30:58.912235",
                 "sensistive_data": true
             },
             "name": "date",
@@ -27,8 +27,8 @@
                     }
                 ],
                 "inference_method": "presidio",
-                "last_inference_date": "2021-09-17 10:08:20.196699",
-                "sensistive_data": false
+                "last_inference_date": "2021-09-17 14:30:58.912235",
+                "sensistive_data": true
             },
             "name": "domain",
             "nullable": true,
@@ -43,8 +43,8 @@
                         "score": 1
                     }
                 ],
-                "inference_method": "manual-revision",
-                "last_inference_date": "2021-09-17 10:08:20.196699",
+                "inference_method": "presidio",
+                "last_inference_date": "2021-09-17 14:30:58.912235",
                 "sensistive_data": true
             },
             "name": "user_id",
@@ -55,16 +55,12 @@
             "metadata": {
                 "data_privacy_assetsment": [],
                 "inference_method": "presidio",
-                "last_inference_date": "2021-09-17 10:08:20.196699",
+                "last_inference_date": "2021-09-17 14:30:58.912235",
                 "sensistive_data": false
             },
             "name": "website_type",
             "nullable": true,
-            "type": {
-                "containsNull": true,
-                "elementType": "string",
-                "type": "array"
-            }
+            "type": "string"
         }
     ],
     "type": "record",

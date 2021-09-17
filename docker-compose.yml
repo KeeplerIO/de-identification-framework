@@ -98,6 +98,7 @@ services:
       - ./src/pyspark:/opt/app/pyspark
       - ./keys:/opt/app/keys
       - ./schemas:/opt/app/schemas
+      - ./src/custom_recognizers:/opt/app/custom_recognizers
     environment: 
       - SPARK_MODE=master
 
@@ -119,6 +120,7 @@ services:
       - ./src/pyspark:/opt/app/pyspark
       - ./keys:/opt/app/keys
       - ./schemas:/opt/app/schemas
+      - ./src/custom_recognizers:/opt/app/custom_recognizers
   
   #<------------ DATA PRODUCER ---------->
   producer:
@@ -129,3 +131,7 @@ services:
     volumes:
       - ./src/data_generators:/opt/app/data_generators
       - ./src/dummy_data:/opt/app/dummy_data
+      - ./src/pyflink:/opt/app/pyflink #remove when flink is ready
+      - ./src/custom_recognizers:/opt/app/custom_recognizers #remove when flink is ready
+      - ./keys:/opt/app/keys #remove when flink is ready
+      - ./schemas:/opt/app/schemas #remove when flink is ready

@@ -1,62 +1,62 @@
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "20-10-2020", "user_id": "12345"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "17-01-2020", "user_id": "98765"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "31-01-2020", "user_id": "87654"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "19-12-2020", "user_id": "23456"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "15-12-2020", "user_id": "45678"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "02-03-2020", "user_id": "23456"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "08-05-2020", "user_id": "87654"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "11-06-2020", "user_id": "45678"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "08-08-2020", "user_id": "87654"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "08-08-2020", "user_id": "23456"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "28-10-2020", "user_id": "98765"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "28-10-2020", "user_id": "45678"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "26-09-2020", "user_id": "12345"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "25-08-2020", "user_id": "23456"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "13-03-2020", "user_id": "12345"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "25-08-2020", "user_id": "87654"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "26-09-2020", "user_id": "12345"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "08-08-2020", "user_id": "98765"}
-{"domain": "wikipedia.org","website_type": ["Wiki"],"date": "08-05-2020", "user_id": "45678"}
-{"domain": "reddit.com","website_type": ["Social Network"],"date": "08-05-2020", "user_id": "12345"}
-{"domain": "reddit.com","website_type": ["Social Network"],"date": "15-12-2020", "user_id": "45678"}
-{"domain": "reddit.com","website_type": ["Social Network"],"date": "26-09-2020", "user_id": "98765"}
-{"domain": "reddit.com","website_type": ["Social Network"],"date": "02-03-2020", "user_id": "12345"}
-{"domain": "reddit.com","website_type": ["Social Network"],"date": "13-03-2020", "user_id": "87654"}
-{"domain": "reddit.com","website_type": ["Social Network"],"date": "25-08-2020", "user_id": "23456"}
-{"domain": "reddit.com","website_type": ["Social Network"],"date": "08-08-2020", "user_id": "45678"}
-{"domain": "reddit.com","website_type": ["Social Network"],"date": "28-10-2020", "user_id": "45678"}
-{"domain": "reddit.com","website_type": ["Social Network"],"date": "26-09-2020", "user_id": "98765"}
-{"domain": "reddit.com","website_type": ["Social Network"],"date": "26-09-2020", "user_id": "87654"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "12-12-2020", "user_id": "23456"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "15-12-2020", "user_id": "23456"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "08-08-2020", "user_id": "87654"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "13-03-2020", "user_id": "23456"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "03-05-2020", "user_id": "45678"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "02-03-2020", "user_id": "98765"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "27-10-2020", "user_id": "45678"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "08-05-2020", "user_id": "87654"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "11-06-2020", "user_id": "45678"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "25-08-2020", "user_id": "45678"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "25-08-2020", "user_id": "98765"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "15-12-2020", "user_id": "12345"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "02-03-2020", "user_id": "87654"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "13-03-2020", "user_id": "12345"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "28-10-2020", "user_id": "23456"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "08-08-2020", "user_id": "98765"}
-{"domain": "instagram.com","website_type": ["Social Network"],"date": "26-09-2020", "user_id": "45678"}
-{"domain": "craigslist.org","website_type": ["Shop"],"date": "12-12-2020", "user_id": "12345"}
-{"domain": "craigslist.org","website_type": ["Shop"],"date": "02-03-2020", "user_id": "23456"}
-{"domain": "craigslist.org","website_type": ["Shop"],"date": "11-06-2020", "user_id": "45678"}
-{"domain": "craigslist.org","website_type": ["Shop"],"date": "08-05-2020", "user_id": "98765"}
-{"domain": "craigslist.org","website_type": ["Shop"],"date": "08-08-2020", "user_id": "45678"}
-{"domain": "linkedin.com","website_type": ["Social Network"],"date": "12-12-2020", "user_id": "23456"}
-{"domain": "linkedin.com","website_type": ["Social Network"],"date": "26-09-2020", "user_id": "45678"}
-{"domain": "linkedin.com","website_type": ["Social Network"],"date": "02-03-2020", "user_id": "98765"}
-{"domain": "linkedin.com","website_type": ["Social Network"],"date": "03-05-2020", "user_id": "87654"}
-{"domain": "linkedin.com","website_type": ["Social Network"],"date": "13-03-2020", "user_id": "12345"}
-{"domain": "linkedin.com","website_type": ["Social Network"],"date": "15-12-2020", "user_id": "45678"}
-{"domain": "linkedin.com","website_type": ["Social Network"],"date": "28-10-2020", "user_id": "98765"}
-{"domain": "linkedin.com","website_type": ["Social Network"],"date": "26-09-2020", "user_id": "87654"}
-{"domain": "steampowered.com","website_type": ["Shop", "Videogames"],"date": "15-12-2020", "user_id": "87654"}
-{"domain": "steampowered.com","website_type": ["Shop", "Videogames"],"date": "13-03-2020", "user_id": "98765"}
-{"domain": "steampowered.com","website_type": ["Shop", "Videogames"],"date": "11-06-2020", "user_id": "12345"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "20-10-2020", "user_id": "user-12345"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "17-01-2020", "user_id": "user-98765"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "31-01-2020", "user_id": "user-87654"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "19-12-2020", "user_id": "user-23456"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "15-12-2020", "user_id": "user-45678"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "02-03-2020", "user_id": "user-23456"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "08-05-2020", "user_id": "user-87654"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "11-06-2020", "user_id": "user-45678"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "08-08-2020", "user_id": "user-87654"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "08-08-2020", "user_id": "user-23456"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "28-10-2020", "user_id": "user-98765"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "28-10-2020", "user_id": "user-45678"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "26-09-2020", "user_id": "user-12345"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "25-08-2020", "user_id": "user-23456"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "13-03-2020", "user_id": "user-12345"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "25-08-2020", "user_id": "user-87654"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "26-09-2020", "user_id": "user-12345"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "08-08-2020", "user_id": "user-98765"}
+{"domain": "wikipedia.org","website_type": "Wiki","date": "08-05-2020", "user_id": "user-45678"}
+{"domain": "reddit.com","website_type": "Social Network","date": "08-05-2020", "user_id": "user-12345"}
+{"domain": "reddit.com","website_type": "Social Network","date": "15-12-2020", "user_id": "user-45678"}
+{"domain": "reddit.com","website_type": "Social Network","date": "26-09-2020", "user_id": "user-98765"}
+{"domain": "reddit.com","website_type": "Social Network","date": "02-03-2020", "user_id": "user-12345"}
+{"domain": "reddit.com","website_type": "Social Network","date": "13-03-2020", "user_id": "user-87654"}
+{"domain": "reddit.com","website_type": "Social Network","date": "25-08-2020", "user_id": "user-23456"}
+{"domain": "reddit.com","website_type": "Social Network","date": "08-08-2020", "user_id": "user-45678"}
+{"domain": "reddit.com","website_type": "Social Network","date": "28-10-2020", "user_id": "user-45678"}
+{"domain": "reddit.com","website_type": "Social Network","date": "26-09-2020", "user_id": "user-98765"}
+{"domain": "reddit.com","website_type": "Social Network","date": "26-09-2020", "user_id": "user-87654"}
+{"domain": "instagram.com","website_type": "Social Network","date": "12-12-2020", "user_id": "user-23456"}
+{"domain": "instagram.com","website_type": "Social Network","date": "15-12-2020", "user_id": "user-23456"}
+{"domain": "instagram.com","website_type": "Social Network","date": "08-08-2020", "user_id": "user-87654"}
+{"domain": "instagram.com","website_type": "Social Network","date": "13-03-2020", "user_id": "user-23456"}
+{"domain": "instagram.com","website_type": "Social Network","date": "03-05-2020", "user_id": "user-45678"}
+{"domain": "instagram.com","website_type": "Social Network","date": "02-03-2020", "user_id": "user-98765"}
+{"domain": "instagram.com","website_type": "Social Network","date": "27-10-2020", "user_id": "user-45678"}
+{"domain": "instagram.com","website_type": "Social Network","date": "08-05-2020", "user_id": "user-87654"}
+{"domain": "instagram.com","website_type": "Social Network","date": "11-06-2020", "user_id": "user-45678"}
+{"domain": "instagram.com","website_type": "Social Network","date": "25-08-2020", "user_id": "user-45678"}
+{"domain": "instagram.com","website_type": "Social Network","date": "25-08-2020", "user_id": "user-98765"}
+{"domain": "instagram.com","website_type": "Social Network","date": "15-12-2020", "user_id": "user-12345"}
+{"domain": "instagram.com","website_type": "Social Network","date": "02-03-2020", "user_id": "user-87654"}
+{"domain": "instagram.com","website_type": "Social Network","date": "13-03-2020", "user_id": "user-12345"}
+{"domain": "instagram.com","website_type": "Social Network","date": "28-10-2020", "user_id": "user-23456"}
+{"domain": "instagram.com","website_type": "Social Network","date": "08-08-2020", "user_id": "user-98765"}
+{"domain": "instagram.com","website_type": "Social Network","date": "26-09-2020", "user_id": "user-45678"}
+{"domain": "craigslist.org","website_type": "Shop","date": "12-12-2020", "user_id": "user-12345"}
+{"domain": "craigslist.org","website_type": "Shop","date": "02-03-2020", "user_id": "user-23456"}
+{"domain": "craigslist.org","website_type": "Shop","date": "11-06-2020", "user_id": "user-45678"}
+{"domain": "craigslist.org","website_type": "Shop","date": "08-05-2020", "user_id": "user-98765"}
+{"domain": "craigslist.org","website_type": "Shop","date": "08-08-2020", "user_id": "user-45678"}
+{"domain": "linkedin.com","website_type": "Social Network","date": "12-12-2020", "user_id": "user-23456"}
+{"domain": "linkedin.com","website_type": "Social Network","date": "26-09-2020", "user_id": "user-45678"}
+{"domain": "linkedin.com","website_type": "Social Network","date": "02-03-2020", "user_id": "user-98765"}
+{"domain": "linkedin.com","website_type": "Social Network","date": "03-05-2020", "user_id": "user-87654"}
+{"domain": "linkedin.com","website_type": "Social Network","date": "13-03-2020", "user_id": "user-12345"}
+{"domain": "linkedin.com","website_type": "Social Network","date": "15-12-2020", "user_id": "user-45678"}
+{"domain": "linkedin.com","website_type": "Social Network","date": "28-10-2020", "user_id": "user-98765"}
+{"domain": "linkedin.com","website_type": "Social Network","date": "26-09-2020", "user_id": "user-87654"}
+{"domain": "steampowered.com","website_type": "Shop","date": "15-12-2020", "user_id": "user-87654"}
+{"domain": "steampowered.com","website_type": "Shop","date": "13-03-2020", "user_id": "user-98765"}
+{"domain": "steampowered.com","website_type": "Shop","date": "11-06-2020", "user_id": "user-12345"}

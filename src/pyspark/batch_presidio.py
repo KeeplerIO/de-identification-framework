@@ -2,11 +2,17 @@ from typing import List, Optional, Dict, Union, Iterator, Iterable
 import collections
 from dataclasses import dataclass
 
-
-from presidio_analyzer import AnalyzerEngine, RecognizerResult
+from presidio_analyzer import AnalyzerEngine, RecognizerResult, RecognizerRegistry
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities.engine.result import EngineResult
 
+
+import sys
+sys.path.append('/opt/app/custom_recognizers/user_recognizer')
+import user_recognizer
+
+sys.path.append('/opt/app/custom_recognizers/custom_card_recognizer')
+import custom_card_recognizer
 @dataclass
 class DictAnalyzerResult:
     """Hold the analyzer results per value or list of values."""
@@ -19,6 +25,16 @@ class BatchAnalyzerEngine(AnalyzerEngine):
     """
     Class inheriting from AnalyzerEngine and adds the funtionality to analyze lists or dictionaries.
     """
+    def __init__(self):
+        registry = RecognizerRegistry()
+        registry.load_predefined_recognizers()
+
+        # Add the recognizer to the existing list of recognizers
+        registry.add_recognizer(user_recognizer.get_recognizer())
+        registry.add_recognizer(custom_card_recognizer.get_recognizer())
+
+        # Set up analyzer with our updated recognizer registry
+        AnalyzerEngine.__init__(self, registry=registry)
     
     def analyze_list(self, list_of_texts: Iterable[str], **kwargs) -> List[List[RecognizerResult]]:
         """

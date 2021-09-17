@@ -46,3 +46,28 @@ docker-compose exec producer python /opt/app/data_generators/producer_kafka_webs
 ```
 docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_channel.py
 ```
+
+### Infer Scheme Movie
+```
+docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_movie.py
+```
+
+### Infer Scheme Website
+```
+docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_website.py
+```
+
+## 4. Flink (Now it does not run in the Flink cluster.)
+
+### Data pipeline job Channel
+```
+docker-compose exec producer python /opt/app/pyflink/data_pipeline_channel.py
+```
+### Data pipeline job Movie
+```
+docker-compose exec producer python /opt/app/pyflink/data_pipeline_movie.py
+```
+### Data pipeline job Website
+```
+docker-compose exec producer python /opt/app/pyflink/data_pipeline_website.py
+```

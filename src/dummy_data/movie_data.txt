@@ -1,9 +1,9 @@
-{"movie_name": "Avatar","movie_type":["Action", "Sci-fi"],"purchase_date" : "12-05-2020","user_id": "12345","price": 13.20, "card_number": 342681575914803}
-{"movie_name": "Inception","movie_type":["Action", "Adventure"],"purchase_date" : "26-07-2019","user_id": "23456","price": 3.15, "card_number": 342854315627130}
-{"movie_name": "The Goodfather","movie_type":["Action", "Drama"],"purchase_date" : "10-03-2020","user_id": "98765","price": 23.10, "card_number": 372346943880499}
-{"movie_name": "Parasite","movie_type":["Comedy", "Crime", "Drama"],"purchase_date" : "05-02-2020","user_id": "87654","price": 13.20, "card_number": 348744444848760}
-{"movie_name": "Joker","movie_type":["Action", "Drama"],"purchase_date" : "22-04-2020","user_id": "23456","price": 5.99, "card_number": 344412524618628}
-{"movie_name": "Toy Story","movie_type":["Animation"],"purchase_date" : "13-03-2020","user_id": "12345","price": 4.25, "card_number": 341973371084274}
-{"movie_name": "Avengers: EndGame","movie_type":["Action", "Adventure"],"purchase_date" : "17-09-2020","user_id": "98765","price": 9.99, "card_number": 374316978831533}
-{"movie_name": "Deadpool","movie_type":["Action", "Comedy"],"purchase_date" : "23-07-2020","user_id": "45678","price": 25.30, "card_number": 373214782862094}
-{"movie_name": "Terminator2","movie_type":["Action", "Adventure", "Sci-fi"],"purchase_date" : "16-06-2020","user_id": "12345","price": 11.50, "card_number": 375510421927539}
+{"movie_name": "Avatar","movie_type":"Action","purchase_date" : "12-05-2020","user_id": "user-12345","price": 13.20, "card_number": "342681575914803"}
+{"movie_name": "Inception","movie_type":"Action","purchase_date" : "26-07-2019","user_id": "user-23456","price": 3.15, "card_number": "342854315627130"}
+{"movie_name": "The Goodfather","movie_type":"Action","purchase_date" : "10-03-2020","user_id": "user-98765","price": 23.10, "card_number": "372346943880499"}
+{"movie_name": "Parasite","movie_type":"Comedy","purchase_date" : "05-02-2020","user_id": "user-87654","price": 13.20, "card_number": "348744444848760"}
+{"movie_name": "Joker","movie_type":"Drama","purchase_date" : "22-04-2020","user_id": "user-23456","price": 5.99, "card_number": "344412524618628"}
+{"movie_name": "Toy Story","movie_type":"Animation","purchase_date" : "13-03-2020","user_id": "user-12345","price": 4.25, "card_number": "341973371084274"}
+{"movie_name": "Avengers: EndGame","movie_type":"Action","purchase_date" : "17-09-2020","user_id": "user-98765","price": 9.99, "card_number": "374316978831533"}
+{"movie_name": "Deadpool","movie_type":"Comedy","purchase_date" : "23-07-2020","user_id": "user-45678","price": 25.30, "card_number": "373214782862094"}
+{"movie_name": "Terminator2","movie_type":"Action","purchase_date" : "16-06-2020","user_id": "user-12345","price": 11.50, "card_number": "375510421927539"}

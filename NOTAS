@@ -1,0 +1,5 @@
+decir en la ppt que presidio luego tiene que tener revision manual
+
+por ejemplo el campo de tarjeta de credito, al ser de mentira no las detecta como verdaderas
+o el campo user id lo detecta como numero, dado que no tiene sentido fuera de este contexto
+de igual manera detecta pii en los nombres de tv shows o peliculas, que son falsos positivos
