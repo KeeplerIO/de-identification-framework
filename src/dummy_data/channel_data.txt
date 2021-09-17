@@ -1,0 +1,16 @@
+{"channel_name":"Fox", "tv_show": "9-1-1", "tv_show_type": ["Drama"], "date": "12-10-2020", "user_id": "12345" }
+{"channel_name":"Fox", "tv_show": "9-1-1", "tv_show_type": ["Drama"], "date": "12-10-2020", "user_id": "23456" }
+{"channel_name":"Fox", "tv_show": "9-1-1", "tv_show_type": ["Drama"], "date": "12-10-2020", "user_id": "45678" }
+{"channel_name":"Fox", "tv_show": "9-1-1", "tv_show_type": ["Drama"], "date": "07-09-2020", "user_id": "12345" }
+{"channel_name":"Fox", "tv_show": "9-1-1", "tv_show_type": ["Drama"], "date": "23-08-2020", "user_id": "87654" }
+{"channel_name":"Fox", "tv_show": "9-1-1", "tv_show_type": ["Drama"], "date": "23-08-2020", "user_id": "12345" }
+{"channel_name":"HBO", "tv_show": "Barry", "tv_show_type": ["Comedy"], "date": "20-04-2020", "user_id": "23456" }
+{"channel_name":"HBO", "tv_show": "Barry", "tv_show_type": ["Comedy"], "date": "20-04-2020", "user_id": "45678" }
+{"channel_name":"HBO", "tv_show": "Barry", "tv_show_type": ["Comedy"], "date": "13-05-2020", "user_id": "98765" }
+{"channel_name":"CBS", "tv_show": "Blood & Treasure", "tv_show_type": ["Action", "Adventure", "Drama"], "date": "22-02-2020", "user_id": "23456" }
+{"channel_name":"CBS", "tv_show": "Blood & Treasure", "tv_show_type": ["Action", "Adventure", "Drama"], "date": "18-02-2020", "user_id": "87654" }
+{"channel_name":"CBS", "tv_show": "Blood & Treasure", "tv_show_type": ["Action", "Adventure", "Drama"], "date": "15-05-2020", "user_id": "87654" }
+{"channel_name":"CBS", "tv_show": "Blood & Treasure", "tv_show_type": ["Action", "Adventure", "Drama"], "date": "15-05-2020", "user_id": "45678" }
+{"channel_name":"MTV", "tv_show": "Siesta Key", "tv_show_type": ["Reality"], "date": "14-06-2020", "user_id": "98765" }
+{"channel_name":"MTV", "tv_show": "Siesta Key", "tv_show_type": ["Reality"], "date": "20-08-2020", "user_id": "98765" }
+{"channel_name":"Disney Channel", "tv_show": "Andi Mack", "tv_show_type": ["Comedy", "Drama"], "date": "13-10-2020", "user_id": "12345" }

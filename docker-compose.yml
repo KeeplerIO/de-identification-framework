@@ -1,0 +1,131 @@
+version: '3'
+services:
+  #<------------ ZOOKEEPER ------------>
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    ports:
+      - "2181:2181"
+
+  #<------------ KAFKA ------------>
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "movie-raw-data:1:1,movie-anonymised-data:1:1,channel-raw-data:1:1,channel-anonymised-data:1:1,website-raw-data:1:1,website-anonymised-data:1:1"
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+
+  kafka-schema-registry:
+    image: confluentinc/cp-schema-registry:5.4.0
+    hostname: kafka-schema-registry
+    depends_on:
+      - zookeeper
+      - kafka
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:5.4.0
+    hostname: control-center
+    logging:
+      driver: none
+    depends_on:
+      - zookeeper
+      - kafka
+      - kafka-schema-registry
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://kafka-schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
+
+  ##<------------ PYFLINK ------------>
+  #pyflink-jobmanager:
+  #  image: pyflink/playgrounds:1.13.0-rc2
+  #  #build: ./images
+  #  volumes:
+  #    - ./app:/opt/app
+  #  hostname: "pyflink-jobmanager"
+  #  expose:
+  #    - "6123"
+  #  ports:
+  #    - "8088:8088"
+  #    - "8081:8081"
+  #  command: jobmanager
+  #  environment:
+  #    - JOB_MANAGER_RPC_ADDRESS=pyflink-jobmanager
+  #    
+  #pyflink-taskmanager:
+  #  image: pyflink/playgrounds:1.13.0-rc2
+  #  volumes:
+  #    - ./app:/opt/app
+  #  expose:
+  #    - "6121"
+  #    - "6122"
+  #  depends_on:
+  #    - pyflink-jobmanager
+  #  command: taskmanager
+  #  links:
+  #    - pyflink-jobmanager:pyflink-jobmanager
+  #  environment:
+  #    - JOB_MANAGER_RPC_ADDRESS=pyflink-jobmanager
+
+  ##<------------ SPARK BITAMI IMAGE ------------>
+  spark-master:
+    build: images/pyspark
+    hostname: "spark-master"
+    expose: 
+      - "7077"
+    ports: 
+      - "8080:8080"
+    volumes:
+      - ./src/pyspark:/opt/app/pyspark
+      - ./keys:/opt/app/keys
+      - ./schemas:/opt/app/schemas
+    environment: 
+      - SPARK_MODE=master
+
+  spark-slave:
+    build: images/pyspark
+    hostname: "spark-slave"
+    expose: 
+      - "7077"
+    ports:
+      - "8082:8082"
+    environment: 
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_PORT=7075
+      - SPARK_WORKER_WEBUI_PORT=8082
+    depends_on:
+      - spark-master
+    volumes:
+      - ./src/pyspark:/opt/app/pyspark
+      - ./keys:/opt/app/keys
+      - ./schemas:/opt/app/schemas
+  
+  #<------------ DATA PRODUCER ---------->
+  producer:
+    build: images/producer
+    tty: true
+    depends_on: 
+      - kafka
+    volumes:
+      - ./src/data_generators:/opt/app/data_generators
+      - ./src/dummy_data:/opt/app/dummy_data

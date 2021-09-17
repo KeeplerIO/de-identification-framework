@@ -1,0 +1,73 @@
+{
+    "fields": [
+        {
+            "metadata": {
+                "data_privacy_assetsment": [
+                    {
+                        "analysis_explanation": null,
+                        "entity_type": "DATE_TIME",
+                        "score": 0.6
+                    }
+                ],
+                "inference_method": "presidio",
+                "last_inference_date": "2021-09-17 10:08:20.196699",
+                "sensistive_data": true
+            },
+            "name": "date",
+            "nullable": true,
+            "type": "string"
+        },
+        {
+            "metadata": {
+                "data_privacy_assetsment": [
+                    {
+                        "analysis_explanation": null,
+                        "entity_type": "DOMAIN_NAME",
+                        "score": 1
+                    }
+                ],
+                "inference_method": "presidio",
+                "last_inference_date": "2021-09-17 10:08:20.196699",
+                "sensistive_data": false
+            },
+            "name": "domain",
+            "nullable": true,
+            "type": "string"
+        },
+        {
+            "metadata": {
+                "data_privacy_assetsment": [
+                    {
+                        "analysis_explanation": null,
+                        "entity_type": "USER_ID",
+                        "score": 1
+                    }
+                ],
+                "inference_method": "manual-revision",
+                "last_inference_date": "2021-09-17 10:08:20.196699",
+                "sensistive_data": true
+            },
+            "name": "user_id",
+            "nullable": true,
+            "type": "string"
+        },
+        {
+            "metadata": {
+                "data_privacy_assetsment": [],
+                "inference_method": "presidio",
+                "last_inference_date": "2021-09-17 10:08:20.196699",
+                "sensistive_data": false
+            },
+            "name": "website_type",
+            "nullable": true,
+            "type": {
+                "containsNull": true,
+                "elementType": "string",
+                "type": "array"
+            }
+        }
+    ],
+    "type": "record",
+    "name": "website",
+    "namespace": "keepler.pluto.website"
+}
