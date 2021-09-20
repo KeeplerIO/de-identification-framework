@@ -57,6 +57,11 @@ docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-
 docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_website.py
 ```
 
+### Schema Compatibility problems during testing
+```
+curl -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" --data '{"compatibility": "NONE"}' http://localhost:8081/config
+```
+
 ## 4. Flink (Now it does not run in the Flink cluster.)
 
 ### Data pipeline job Channel
