@@ -1,0 +1,90 @@
+{
+    "fields": [
+        {
+            "metadata": {
+                "data_privacy_assetsment": [
+                    {
+                        "analysis_explanation": null,
+                        "entity_type": "UK_NHS",
+                        "score": 1
+                    },
+                    {
+                        "analysis_explanation": null,
+                        "entity_type": "PHONE_NUMBER",
+                        "score": 0.4
+                    }
+                ],
+                "inference_method": "presidio",
+                "last_inference_date": "2021-10-04 14:22:09.068258",
+                "sensistive_data": true
+            },
+            "name": "a_party",
+            "nullable": true,
+            "type": "string"
+        },
+        {
+            "metadata": {
+                "data_privacy_assetsment": [
+                    {
+                        "analysis_explanation": null,
+                        "entity_type": "UK_NHS",
+                        "score": 1
+                    },
+                    {
+                        "analysis_explanation": null,
+                        "entity_type": "PHONE_NUMBER",
+                        "score": 0.4
+                    }
+                ],
+                "inference_method": "presidio",
+                "last_inference_date": "2021-10-04 14:22:09.068258",
+                "sensistive_data": true
+            },
+            "name": "b_party",
+            "nullable": true,
+            "type": "string"
+        },
+        {
+            "metadata": {
+                "data_privacy_assetsment": [],
+                "inference_method": "presidio",
+                "last_inference_date": "2021-10-04 14:22:09.068258",
+                "sensistive_data": false
+            },
+            "name": "call_type",
+            "nullable": true,
+            "type": "long"
+        },
+        {
+            "metadata": {
+                "data_privacy_assetsment": [],
+                "inference_method": "presidio",
+                "last_inference_date": "2021-10-04 14:22:09.068258",
+                "sensistive_data": false
+            },
+            "name": "duration",
+            "nullable": true,
+            "type": "long"
+        },
+        {
+            "metadata": {
+                "data_privacy_assetsment": [
+                    {
+                        "analysis_explanation": null,
+                        "entity_type": "DATE_TIME",
+                        "score": 0.85
+                    }
+                ],
+                "inference_method": "presidio",
+                "last_inference_date": "2021-10-04 14:22:09.068258",
+                "sensistive_data": true
+            },
+            "name": "starting_time",
+            "nullable": true,
+            "type": "string"
+        }
+    ],
+    "type": "record",
+    "name": "mobile",
+    "namespace": "keepler.pluto.mobile"
+}

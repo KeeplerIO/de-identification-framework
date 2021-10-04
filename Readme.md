@@ -39,6 +39,10 @@ docker-compose exec producer python /opt/app/data_generators/producer_kafka_chan
 ```
 docker-compose exec producer python /opt/app/data_generators/producer_kafka_website.py
 ```
+### Generate mobile raw data
+```
+docker-compose exec producer python /opt/app/data_generators/producer_kafka_mobile.py
+```
 
 ## 3. Spark
 
@@ -55,6 +59,11 @@ docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-
 ### Infer Scheme Website
 ```
 docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_website.py
+```
+
+### Infer Scheme Mobile
+```
+docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_mobile.py
 ```
 
 ### Schema Compatibility problems during testing

@@ -15,7 +15,7 @@ services:
       - zookeeper
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "movie-raw-data:1:1,movie-anonymised-data:1:1,channel-raw-data:1:1,channel-anonymised-data:1:1,website-raw-data:1:1,website-anonymised-data:1:1"
+      KAFKA_CREATE_TOPICS: "movie-raw-data:1:1,movie-anonymised-data:1:1,channel-raw-data:1:1,channel-anonymised-data:1:1,website-raw-data:1:1,website-anonymised-data:1:1,mobile-raw-data:1:1,mobile-anonymised-data:1:1"
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENERS: PLAINTEXT://kafka:9092
@@ -23,7 +23,8 @@ services:
       KAFKA_DELETE_TOPIC_ENABLE: "true"
 
   kafka-schema-registry:
-    image: confluentinc/cp-schema-registry:6.0.4
+    image: eugenetea/schema-registry-arm64:latest
+    container_name: kafka-schema-registry
     hostname: kafka-schema-registry
     depends_on:
       - zookeeper
@@ -31,29 +32,31 @@ services:
     ports:
       - "8081:8081"
     environment:
-      SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+      SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
+      #SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
+      #SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
 
-  control-center:
-    image: confluentinc/cp-enterprise-control-center:6.0.4
-    hostname: control-center
-    logging:
-      driver: none
-    depends_on:
-      - zookeeper
-      - kafka
-      - kafka-schema-registry
-    ports:
-      - "9021:9021"
-    environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
-      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://kafka-schema-registry:8081"
-      CONTROL_CENTER_REPLICATION_FACTOR: 1
-      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
-      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
-      PORT: 9021
+  #control-center:
+  #  image: confluentinc/cp-enterprise-control-center:6.0.4
+  #  hostname: control-center
+  #  logging:
+  #    driver: none
+  #  depends_on:
+  #    - zookeeper
+  #    - kafka
+  #    - kafka-schema-registry
+  #  ports:
+  #    - "9021:9021"
+  #  environment:
+  #    CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
+  #    CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+  #    CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://kafka-schema-registry:8081"
+  #    CONTROL_CENTER_REPLICATION_FACTOR: 1
+  #    CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+  #    CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+  #    CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+  #    PORT: 9021
 
   ##<------------ PYFLINK ------------>
   #pyflink-jobmanager:
