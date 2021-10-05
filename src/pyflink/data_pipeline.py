@@ -158,7 +158,8 @@ def job_data_pipeline(schema_server,schema_name,kafka_servers,topic_input,topic_
                         "DATE_TIME" : OperatorConfig("custom",{"lambda": lambda x: shifting(x)}),
                         "CREDIT_CARD" : OperatorConfig("hash", {"hash_type": "sha256" }),
                         "CUSTOM_CREDIT_CARD" : OperatorConfig("hash", {"hash_type": "sha256" }),
-                        "DOMAIN_NAME" : OperatorConfig("custom", {"lambda": lambda x: x })
+                        "DOMAIN_NAME" : OperatorConfig("custom", {"lambda": lambda x: x }),
+                        "PHONE_NUMBER" : OperatorConfig("hash", {"hash_type": "sha256" }),
                     }
                 ).to_json()
                 message.value[key] = json.loads(anonymized_result)['text']

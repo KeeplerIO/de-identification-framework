@@ -85,3 +85,8 @@ docker-compose exec producer python /opt/app/pyflink/data_pipeline_movie.py
 ```
 docker-compose exec producer python /opt/app/pyflink/data_pipeline_website.py
 ```
+
+### Data pipeline job Mobile
+```
+docker-compose exec producer python /opt/app/pyflink/data_pipeline_mobile.py
+```
