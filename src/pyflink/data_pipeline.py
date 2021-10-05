@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from presidio_analyzer import AnalyzerEngine, RecognizerRegistry
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities.engine import AnonymizerResult, OperatorConfig
+from presidio_anonymizer.entities import RecognizerResult
 
 from confluent_kafka import Producer
 from confluent_kafka import SerializingProducer
@@ -145,11 +146,16 @@ def job_data_pipeline(schema_server,schema_name,kafka_servers,topic_input,topic_
     anonymizer = AnonymizerEngine()
 
     for message in consumer:
-
         for key in message.value.keys():
             pii_entities = pii_per_field[key]
             if len(pii_entities):
-                analyzer_results = analyzer.analyze(text=str(message.value[key]), entities=pii_entities, language='en')
+                analyzer_results=None
+                if len(pii_entities) > 1: # Free text field
+                    analyzer_results = analyzer.analyze(text=str(message.value[key]), entities=pii_entities, language='en')                               
+                else:
+                    analyzer_results=[
+                        RecognizerResult(entity_type=pii_entities[0], start=0, end=len(str(message.value[key])), score=1 )
+                    ]
                 anonymized_result = anonymizer.anonymize(
                     text=str(message.value[key]),
                     analyzer_results=analyzer_results,
