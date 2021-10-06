@@ -1,30 +1,61 @@
+---
 version: '3'
+volumes:
+  esdata: null
+  mysqldata: null
+  zkdata: null
 services:
   #<------------ ZOOKEEPER ------------>
   zookeeper:
     image: wurstmeister/zookeeper:3.4.6
     ports:
       - "2181:2181"
+  # zookeeper:
+  #   environment:
+  #     - ZOOKEEPER_CLIENT_PORT=2181
+  #     - ZOOKEEPER_TICK_TIME=2000
+  #   hostname: zookeeper
+  #   image: confluentinc/cp-zookeeper:5.4.0
+  #   ports:
+  #     - 2181:2181
+  #   volumes:
+  #     - zkdata:/var/opt/zookeeper
 
   #<------------ KAFKA ------------>
+  # kafka:
+  #   image: wurstmeister/kafka:2.12-2.5.0
+  #   ports:
+  #     - "9092:9092"
+  #   depends_on:
+  #     - zookeeper
+  #   environment:
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_CREATE_TOPICS: "movie-raw-data:1:1,movie-anonymised-data:1:1,channel-raw-data:1:1,channel-anonymised-data:1:1,website-raw-data:1:1,website-anonymised-data:1:1,mobile-raw-data:1:1,mobile-anonymised-data:1:1"
+  #     KAFKA_ADVERTISED_PORT: 9092
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+  #     KAFKA_LISTENERS: PLAINTEXT://kafka:9092
+  #     KAFKA_ADVERTISED_HOST_NAME: localhost
+  #     KAFKA_DELETE_TOPIC_ENABLE: "true"
   kafka:
-    image: wurstmeister/kafka:2.12-2.5.0
-    ports:
-      - "9092:9092"
     depends_on:
-      - zookeeper
+    - zookeeper
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "movie-raw-data:1:1,movie-anonymised-data:1:1,channel-raw-data:1:1,channel-anonymised-data:1:1,website-raw-data:1:1,website-anonymised-data:1:1,mobile-raw-data:1:1,mobile-anonymised-data:1:1"
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_ADVERTISED_HOST_NAME: localhost
-      KAFKA_DELETE_TOPIC_ENABLE: "true"
+    - KAFKA_BROKER_ID=1
+    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+    - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+    - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+    - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+    - KAFKA_HEAP_OPTS=-Xms256m -Xmx256m
+    hostname: kafka
+    image: confluentinc/cp-kafka:5.4.0
+    ports:
+    - 29092:29092
+    - 9092:9092
 
   kafka-schema-registry:
-    image: eugenetea/schema-registry-arm64:latest
-    container_name: kafka-schema-registry
+    image: confluentinc/cp-schema-registry:5.3.6
+    #container_name: kafka-schema-registry
     hostname: kafka-schema-registry
     depends_on:
       - zookeeper
@@ -32,10 +63,8 @@ services:
     ports:
       - "8081:8081"
     environment:
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
       SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
-      #SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
-      #SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
 
   #control-center:
   #  image: confluentinc/cp-enterprise-control-center:6.0.4
@@ -90,51 +119,162 @@ services:
   #    - JOB_MANAGER_RPC_ADDRESS=pyflink-jobmanager
 
   ##<------------ SPARK BITAMI IMAGE ------------>
-  spark-master:
-    build: images/pyspark
-    hostname: "spark-master"
-    expose: 
-      - "7077"
-    ports: 
-      - "8080:8080"
-    volumes:
-      - ./src/pyspark:/opt/app/pyspark
-      - ./keys:/opt/app/keys
-      - ./schemas:/opt/app/schemas
-      - ./src/custom_recognizers:/opt/app/custom_recognizers
-    environment: 
-      - SPARK_MODE=master
+  # spark-master:
+  #   build: images/pyspark
+  #   hostname: "spark-master"
+  #   expose: 
+  #     - "7077"
+  #   #ports: 
+  #   #  - "8080:8080"
+  #   volumes:
+  #     - ./src/pyspark:/opt/app/pyspark
+  #     - ./keys:/opt/app/keys
+  #     - ./schemas:/opt/app/schemas
+  #     - ./src/custom_recognizers:/opt/app/custom_recognizers
+  #   environment: 
+  #     - SPARK_MODE=master
 
-  spark-slave:
-    build: images/pyspark
-    hostname: "spark-slave"
-    expose: 
-      - "7077"
-    ports:
-      - "8082:8082"
-    environment: 
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_PORT=7075
-      - SPARK_WORKER_WEBUI_PORT=8082
-    depends_on:
-      - spark-master
-    volumes:
-      - ./src/pyspark:/opt/app/pyspark
-      - ./keys:/opt/app/keys
-      - ./schemas:/opt/app/schemas
-      - ./src/custom_recognizers:/opt/app/custom_recognizers
+  # spark-slave:
+  #   build: images/pyspark
+  #   hostname: "spark-slave"
+  #   expose: 
+  #     - "7077"
+  #   #ports:
+  #   #  - "8082:8082"
+  #   environment: 
+  #     - SPARK_MODE=worker
+  #     - SPARK_MASTER_URL=spark://spark-master:7077
+  #     - SPARK_WORKER_PORT=7075
+  #     - SPARK_WORKER_WEBUI_PORT=8082
+  #   depends_on:
+  #     - spark-master
+  #   volumes:
+  #     - ./src/pyspark:/opt/app/pyspark
+  #     - ./keys:/opt/app/keys
+  #     - ./schemas:/opt/app/schemas
+  #     - ./src/custom_recognizers:/opt/app/custom_recognizers
   
-  #<------------ DATA PRODUCER ---------->
-  producer:
-    build: images/producer
-    tty: true
-    depends_on: 
-      - kafka
+  # #<------------ DATA PRODUCER ---------->
+  # producer:
+  #   build: images/producer
+  #   tty: true
+  #   depends_on: 
+  #     - kafka
+  #   volumes:
+  #     - ./src/data_generators:/opt/app/data_generators
+  #     - ./src/dummy_data:/opt/app/dummy_data
+  #     - ./src/pyflink:/opt/app/pyflink #remove when flink is ready
+  #     - ./src/custom_recognizers:/opt/app/custom_recognizers #remove when flink is ready
+  #     - ./keys:/opt/app/keys #remove when flink is ready
+  #     - ./schemas:/opt/app/schemas #remove when flink is ready
+      
+  #<------------ DATAHUB ---------->
+  
+  mysql:
+    hostname: mysql
+    image: mysql:5.7
+    env_file: env/mysql.env
+    ports:
+      - "3306:3306"
     volumes:
-      - ./src/data_generators:/opt/app/data_generators
-      - ./src/dummy_data:/opt/app/dummy_data
-      - ./src/pyflink:/opt/app/pyflink #remove when flink is ready
-      - ./src/custom_recognizers:/opt/app/custom_recognizers #remove when flink is ready
-      - ./keys:/opt/app/keys #remove when flink is ready
-      - ./schemas:/opt/app/schemas #remove when flink is ready
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysqldata:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    
+  elasticsearch:
+    hostname: elasticsearch
+    image: elasticsearch:7.9.3
+    env_file: env/elasticsearch.env
+    ports:
+    - "9200:9200"
+    volumes:
+    - esdata:/usr/share/elasticsearch/data
+    healthcheck:
+        test: ["CMD-SHELL", "curl -sS --fail 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=0s' || exit 1"]
+        interval: 60s
+        timeout: 30s
+        retries: 10
+         
+  elasticsearch-setup:
+    depends_on:
+    - elasticsearch
+    environment:
+    - ELASTICSEARCH_HOST=elasticsearch
+    - ELASTICSEARCH_PORT=9200
+    - ELASTICSEARCH_PROTOCOL=http
+    hostname: elasticsearch-setup
+    image: linkedin/datahub-elasticsearch-setup:v0.8.14
+  
+  kafka-setup:
+    depends_on:
+    - kafka
+    - kafka-schema-registry
+    environment:
+    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+    - KAFKA_BOOTSTRAP_SERVER=kafka:29092
+    hostname: kafka-setup
+    image: linkedin/datahub-kafka-setup:v0.8.14
+    
+  mysql-setup:
+    build:
+      context: images/datahub
+      dockerfile: docker/mysql-setup/Dockerfile
+    #image: acryldata/datahub-mysql-setup:head
+    hostname: mysql-setup
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USERNAME=datahub
+      - MYSQL_PASSWORD=datahub
+      - DATAHUB_DB_NAME=datahub
+    depends_on:
+      - mysql
+
+  datahub-gms:
+      #build:
+      #  context: images/datahub/
+      #  dockerfile: docker/datahub-gms/Dockerfile
+      image: linkedin/datahub-gms:v0.8.14
+      hostname: datahub-gms
+      #container_name: datahub-gms
+      ports:
+        - "8080:8080"
+      depends_on:
+        - elasticsearch-setup
+        - kafka-setup
+        - mysql
+      environment:
+        - DATASET_ENABLE_SCSI=false
+        - EBEAN_DATASOURCE_USERNAME=datahub
+        - EBEAN_DATASOURCE_PASSWORD=datahub
+        - EBEAN_DATASOURCE_HOST=mysql:3306
+        - EBEAN_DATASOURCE_URL=jdbc:mysql://mysql:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
+        - EBEAN_DATASOURCE_DRIVER=com.mysql.jdbc.Driver
+        - KAFKA_BOOTSTRAP_SERVER=kafka:29092
+        - KAFKA_SCHEMAREGISTRY_URL=http://kafka-schema-registry:8081
+        - ELASTICSEARCH_HOST=elasticsearch
+        - ELASTICSEARCH_PORT=9200
+        - GRAPH_SERVICE_IMPL=elasticsearch
+        - JAVA_OPTS=-Xms1g -Xmx1g
+        - ENTITY_REGISTRY_CONFIG_PATH=/datahub/datahub-gms/resources/entity-registry.yml
+        - MAE_CONSUMER_ENABLED=true
+        - MCE_CONSUMER_ENABLED=true
+
+  datahub-frontend-react:
+    image: linkedin/datahub-frontend-react:v0.8.14
+    hostname: datahub-frontend-react
+    ports:
+      - "8082:9002"
+    depends_on:
+      - datahub-gms
+    environment:
+      - DATAHUB_GMS_HOST=datahub-gms
+      - DATAHUB_GMS_PORT=8080
+      - DATAHUB_SECRET=YouKnowNothing
+      - DATAHUB_APP_VERSION=1.0
+      - DATAHUB_PLAY_MEM_BUFFER_SIZE=10MB
+      - JAVA_OPTS=-Xms512m -Xmx512m -Dhttp.port=9002 -Dconfig.file=datahub-frontend/conf/application.conf -Djava.security.auth.login.config=datahub-frontend/conf/jaas.conf -Dlogback.configurationFile=datahub-frontend/conf/logback.xml -Dlogback.debug=false -Dpidfile.path=/dev/null
+      - KAFKA_BOOTSTRAP_SERVER=kafka:29092
+      - DATAHUB_TRACKING_TOPIC=DataHubUsageEvent_v1
+      - ELASTIC_CLIENT_HOST=elasticsearch
+      - ELASTIC_CLIENT_PORT=9200
