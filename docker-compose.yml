@@ -119,54 +119,54 @@ services:
   #    - JOB_MANAGER_RPC_ADDRESS=pyflink-jobmanager
 
   ##<------------ SPARK BITAMI IMAGE ------------>
-  # spark-master:
-  #   build: images/pyspark
-  #   hostname: "spark-master"
-  #   expose: 
-  #     - "7077"
-  #   #ports: 
-  #   #  - "8080:8080"
-  #   volumes:
-  #     - ./src/pyspark:/opt/app/pyspark
-  #     - ./keys:/opt/app/keys
-  #     - ./schemas:/opt/app/schemas
-  #     - ./src/custom_recognizers:/opt/app/custom_recognizers
-  #   environment: 
-  #     - SPARK_MODE=master
+  spark-master:
+    build: images/pyspark
+    hostname: "spark-master"
+    expose: 
+      - "7077"
+    #ports: 
+    #  - "8080:8080"
+    volumes:
+      - ./src/pyspark:/opt/app/pyspark
+      - ./keys:/opt/app/keys
+      - ./schemas:/opt/app/schemas
+      - ./src/custom_recognizers:/opt/app/custom_recognizers
+    environment: 
+      - SPARK_MODE=master
 
-  # spark-slave:
-  #   build: images/pyspark
-  #   hostname: "spark-slave"
-  #   expose: 
-  #     - "7077"
-  #   #ports:
-  #   #  - "8082:8082"
-  #   environment: 
-  #     - SPARK_MODE=worker
-  #     - SPARK_MASTER_URL=spark://spark-master:7077
-  #     - SPARK_WORKER_PORT=7075
-  #     - SPARK_WORKER_WEBUI_PORT=8082
-  #   depends_on:
-  #     - spark-master
-  #   volumes:
-  #     - ./src/pyspark:/opt/app/pyspark
-  #     - ./keys:/opt/app/keys
-  #     - ./schemas:/opt/app/schemas
-  #     - ./src/custom_recognizers:/opt/app/custom_recognizers
+  spark-slave:
+    build: images/pyspark
+    hostname: "spark-slave"
+    expose: 
+      - "7077"
+    #ports:
+    #  - "8082:8082"
+    environment: 
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_PORT=7075
+      - SPARK_WORKER_WEBUI_PORT=8082
+    depends_on:
+      - spark-master
+    volumes:
+      - ./src/pyspark:/opt/app/pyspark
+      - ./keys:/opt/app/keys
+      - ./schemas:/opt/app/schemas
+      - ./src/custom_recognizers:/opt/app/custom_recognizers
   
   # #<------------ DATA PRODUCER ---------->
-  # producer:
-  #   build: images/producer
-  #   tty: true
-  #   depends_on: 
-  #     - kafka
-  #   volumes:
-  #     - ./src/data_generators:/opt/app/data_generators
-  #     - ./src/dummy_data:/opt/app/dummy_data
-  #     - ./src/pyflink:/opt/app/pyflink #remove when flink is ready
-  #     - ./src/custom_recognizers:/opt/app/custom_recognizers #remove when flink is ready
-  #     - ./keys:/opt/app/keys #remove when flink is ready
-  #     - ./schemas:/opt/app/schemas #remove when flink is ready
+  producer:
+    build: images/producer
+    tty: true
+    depends_on: 
+      - kafka
+    volumes:
+      - ./src/data_generators:/opt/app/data_generators
+      - ./src/dummy_data:/opt/app/dummy_data
+      - ./src/pyflink:/opt/app/pyflink #remove when flink is ready
+      - ./src/custom_recognizers:/opt/app/custom_recognizers #remove when flink is ready
+      - ./keys:/opt/app/keys #remove when flink is ready
+      - ./schemas:/opt/app/schemas #remove when flink is ready
       
   #<------------ DATAHUB ---------->
   
