@@ -216,10 +216,10 @@ services:
     image: linkedin/datahub-kafka-setup:v0.8.14
     
   mysql-setup:
-    build:
-      context: images/datahub
-      dockerfile: docker/mysql-setup/Dockerfile
-    #image: acryldata/datahub-mysql-setup:head
+    #build:
+    #  context: images/datahub
+    #  dockerfile: docker/mysql-setup/Dockerfile
+    image: acryldata/datahub-mysql-setup:head
     hostname: mysql-setup
     environment:
       - MYSQL_HOST=mysql
