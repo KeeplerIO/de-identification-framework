@@ -1,6 +1,6 @@
 from inference_model import infer_schema
 
-KAFKA_SERVER='kafka:9092'
+KAFKA_SERVER='kafka:29092'
 KAFKA_TOPIC='movie-raw-data'
 SCHEMA_NAME='movie'
 

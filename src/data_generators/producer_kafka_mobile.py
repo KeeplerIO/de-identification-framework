@@ -5,7 +5,7 @@ from time import sleep
 import json
 import os
 
-KAFKA_SERVERS=['kafka:9092']
+KAFKA_SERVERS=['kafka:29092']
 KAFKA_TOPIC='mobile-raw-data'
 DATA_FILE='/../dummy_data/mobile_data.txt'
 

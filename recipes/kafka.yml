@@ -1,0 +1,15 @@
+source:
+  type: "kafka"
+  config:
+    connection:
+      bootstrap: "localhost:9092"
+      schema_registry_url: http://localhost:8081
+    topic_patterns:
+      deny:
+        - 'MetadataChange*'
+        - 'MetadataAudit*'
+        - 'FailedMetadataChange*'
+sink:
+  type: "datahub-rest"
+  config:
+    server: "http://localhost:8080"

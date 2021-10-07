@@ -1,6 +1,6 @@
 from data_pipeline import job_data_pipeline
 
-KAFKA_SERVER = ['kafka:9092']
+KAFKA_SERVER = ['kafka:29092']
 SCHEMA_SERVER = "http://kafka-schema-registry:8081"
 SCHEMA_NAME = 'movie.avsc'
 KAFKA_RAW_TOPIC='movie-raw-data'

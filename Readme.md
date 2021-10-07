@@ -3,27 +3,27 @@
 ## 1. Kafka
 ###  Create Kafka Topic
 ```
-docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic <TOPIC>
+docker-compose exec kafka kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic <TOPIC>
 ```
 ###  List Topics
 ```
-docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --list --zookeeper zookeeper:2181
+docker-compose exec kafka kafka-topic --list --zookeeper zookeeper:2181
 ```
 ###  Describe Topic
 ```
-docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --describe --zookeeper zookeeper:2181 --topic <TOPIC>
+docker-compose exec kafka kafka-topic --describe --zookeeper zookeeper:2181 --topic <TOPIC>
 ```
 ###  Remove Topic
 ```
-docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --zookeeper zookeeper:2181 --topic <TOPIC> --delete
+docker-compose exec kafka kafka-topic --zookeeper zookeeper:2181 --topic <TOPIC> --delete
 ```
 ###  Purge Topic
 ```
-docker-compose exec kafka /opt/kafka/bin/kafka-configs.sh --zookeeper zookeeper:2181 --entity-type topics --alter --entity-name <TOPIC> --add-config retention.ms=1000
+docker-compose exec kafka kafka-configs --zookeeper zookeeper:2181 --entity-type topics --alter --entity-name <TOPIC> --add-config retention.ms=1000
 ```
 ### See messages
 ```
-docker-compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic <TOPIC> --from-beginning
+docker-compose exec kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic <TOPIC> --from-beginning
 ```
 
 ## 2. Producer
@@ -90,3 +90,15 @@ docker-compose exec producer python /opt/app/pyflink/data_pipeline_website.py
 ```
 docker-compose exec producer python /opt/app/pyflink/data_pipeline_mobile.py
 ```
+
+#Datahub
+
+Ingest
+
+kafla
+
+We are gonna need a containter with datahub installed on it (now i am using the cloud9´s vm)
+
+pip install 'acryl-datahub[kafka]'
+
+datahub ingest -c recipes/kafka.yml
