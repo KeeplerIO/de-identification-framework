@@ -1,0 +1,33 @@
+version: 1
+source: Keepler
+
+owners:
+  users:
+    - Keepler
+url: "https://www.keepler.io"
+nodes:
+  - name: Classification
+    description: A set of terms related to Data Classification
+    terms:
+      - name: PII
+        description: Personally Identifiable Information
+        term_source: "EXTERNAL"
+        source_url: "https://en.wikipedia.org/wiki/Personal_data"
+ 
+  - name: PersonalInformation
+    description: All terms related to personal information
+    terms:
+      - name: Email
+        description: An individual's email address
+        inherits:
+          - Classification.PII
+      - name: Address
+        description: A physical address
+        inherits:
+          - Classification.PII
+      - name: Gender
+        description: The gender identity of the individual
+      - name: Phone Number
+        description: An individual's phone number
+        inherits:
+          - Classification.PII

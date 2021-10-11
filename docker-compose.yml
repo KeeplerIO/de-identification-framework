@@ -4,6 +4,7 @@ volumes:
   esdata: null
   mysqldata: null
   zkdata: null
+  neo4jdata: null
 services:
   #<------------ ZOOKEEPER ------------>
   zookeeper:
@@ -229,6 +230,20 @@ services:
       - DATAHUB_DB_NAME=datahub
     depends_on:
       - mysql
+      
+  neo4j:
+    container_name: neo4j
+    environment:
+    - NEO4J_AUTH=neo4j/datahub
+    - NEO4J_dbms_default__database=graph.db
+    - NEO4J_dbms_allow__upgrade=true
+    hostname: neo4j
+    image: neo4j:4.0.6
+    ports:
+    - 7474:7474
+    - 7687:7687
+    volumes:
+    - neo4jdata:/data
 
   datahub-gms:
       #build:
@@ -254,11 +269,16 @@ services:
         - KAFKA_SCHEMAREGISTRY_URL=http://kafka-schema-registry:8081
         - ELASTICSEARCH_HOST=elasticsearch
         - ELASTICSEARCH_PORT=9200
-        - GRAPH_SERVICE_IMPL=elasticsearch
         - JAVA_OPTS=-Xms1g -Xmx1g
         - ENTITY_REGISTRY_CONFIG_PATH=/datahub/datahub-gms/resources/entity-registry.yml
         - MAE_CONSUMER_ENABLED=true
         - MCE_CONSUMER_ENABLED=true
+        - NEO4J_HOST=http://neo4j:7474
+        - NEO4J_URI=bolt://neo4j
+        - NEO4J_USERNAME=neo4j
+        - NEO4J_PASSWORD=datahub
+        #- GRAPH_SERVICE_IMPL=elasticsearch
+        - GRAPH_SERVICE_IMPL=neo4j
 
   datahub-frontend-react:
     image: linkedin/datahub-frontend-react:v0.8.14
