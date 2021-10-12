@@ -11,7 +11,7 @@ from datetime import datetime
 def read_kafka_topic(kafka_broker, topic):
 
     spark = SparkSession.builder.appName("pyspark-inference-job").getOrCreate()
-
+    spark.sparkContext.setLogLevel('WARN')
     df_json = (spark.read
                .format("kafka")
                .option("kafka.bootstrap.servers", kafka_broker)
