@@ -23,10 +23,7 @@ def read_kafka_topic(kafka_broker, topic):
                # filter out empty values
                .withColumn("value", expr("string(value)"))
                .filter(col("value").isNotNull())
-               # get latest version of each record
-               .select("key", expr("struct(offset, value) r"))
-               .groupBy("key").agg(expr("max(r) r")) 
-               .select("r.value"))
+               .select("value"))
     
     # decode the json values
     df_read = spark.read.json(
