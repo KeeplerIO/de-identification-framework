@@ -68,7 +68,7 @@ def add_metadata(df):
 
     analysis_set = list(analysis_set.values())
     metadata_row['data_privacy_assetsment'] = analysis_set
-    if len(analysis) > 0:
+    if len(analysis_set) > 0:
       metadata_row['sensistive_data'] = True
     else:
       metadata_row['sensistive_data'] = False
