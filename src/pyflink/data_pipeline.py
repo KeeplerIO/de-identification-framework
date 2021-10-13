@@ -109,7 +109,7 @@ def validate_date(date_text):
 
 # TODO Have a variable shifting per user and store it.
 def shifting(date):
-    if date != "PII" and validate_date(date):
+    if validate_date(date):
         datetime_obj= datetime.strptime(date, '%d-%M-%Y')
         datetime_shifted=datetime_obj + timedelta(days=-2)
         return datetime_shifted.strftime('%d-%M-%Y')
