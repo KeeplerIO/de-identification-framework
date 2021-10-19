@@ -7,15 +7,15 @@ docker-compose exec kafka kafka-topics --create --if-not-exists --zookeeper zook
 ```
 ###  List Topics
 ```
-docker-compose exec kafka kafka-topic --list --zookeeper zookeeper:2181
+docker-compose exec kafka kafka-topics --list --zookeeper zookeeper:2181
 ```
 ###  Describe Topic
 ```
-docker-compose exec kafka kafka-topic --describe --zookeeper zookeeper:2181 --topic <TOPIC>
+docker-compose exec kafka kafka-topics --describe --zookeeper zookeeper:2181 --topic <TOPIC>
 ```
 ###  Remove Topic
 ```
-docker-compose exec kafka kafka-topic --zookeeper zookeeper:2181 --topic <TOPIC> --delete
+docker-compose exec kafka kafka-topics --zookeeper zookeeper:2181 --topic <TOPIC> --delete
 ```
 ###  Purge Topic
 ```

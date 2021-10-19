@@ -11,7 +11,7 @@ from datetime import datetime
 def read_kafka_topic(kafka_broker, topic):
 
     spark = SparkSession.builder.appName("pyspark-inference-job").getOrCreate()
-
+    spark.sparkContext.setLogLevel('WARN')
     df_json = (spark.read
                .format("kafka")
                .option("kafka.bootstrap.servers", kafka_broker)
@@ -23,10 +23,7 @@ def read_kafka_topic(kafka_broker, topic):
                # filter out empty values
                .withColumn("value", expr("string(value)"))
                .filter(col("value").isNotNull())
-               # get latest version of each record
-               .select("key", expr("struct(offset, value) r"))
-               .groupBy("key").agg(expr("max(r) r")) 
-               .select("r.value"))
+               .select("value"))
     
     # decode the json values
     df_read = spark.read.json(
@@ -57,16 +54,21 @@ def add_metadata(df):
   }
 
   for r in analyzer_results:
-    analysis = []
+    analysis_set = {}
     metadata_row = metadata_df
-    for x in r.recognizer_results[0]:
-      aux = x.to_dict()
-      del aux['end']
-      del aux['start']
-      analysis.append(aux)
+    for x in r.recognizer_results:
+      if x:
+        aux = x[0].to_dict()
+        if aux['score'] > 0.7:
+          del aux['end']
+          del aux['start']
+          # select only distinct PII detection findings with maximum score
+          if not aux['entity_type'] in analysis_set or analysis_set[aux['entity_type']]['score'] < aux['score']:
+            analysis_set[aux['entity_type']] = aux
 
-    metadata_row['data_privacy_assetsment'] = analysis
-    if len(analysis) > 0:
+    analysis_set = list(analysis_set.values())
+    metadata_row['data_privacy_assetsment'] = analysis_set
+    if len(analysis_set) > 0:
       metadata_row['sensistive_data'] = True
     else:
       metadata_row['sensistive_data'] = False

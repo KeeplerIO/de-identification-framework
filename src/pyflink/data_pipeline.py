@@ -99,9 +99,17 @@ def retrieve_key(key_name):
 def encrypt(str, key):
     return Fernet(key).encrypt(str.encode()).decode()
 
+def validate_date(date_text):
+    try:
+        if date_text != datetime.strptime(date_text, "%Y-%m-%d").strftime('%Y-%m-%d'):
+            raise ValueError
+        return True
+    except ValueError:
+        return False
+
 # TODO Have a variable shifting per user and store it.
 def shifting(date):
-    if date != "PII":
+    if validate_date(date):
         datetime_obj= datetime.strptime(date, '%d-%M-%Y')
         datetime_shifted=datetime_obj + timedelta(days=-2)
         return datetime_shifted.strftime('%d-%M-%Y')
