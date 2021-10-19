@@ -280,8 +280,9 @@ services:
     image: sansarip/apache-atlas
     expose:
       - "21000"
+      - "8082"
     ports:
-      - "21000:21000"
+      - "8082:21000"
     volumes:
       - atlasdata:/opt/apache-atlas-2.0.0
     depends_on:
