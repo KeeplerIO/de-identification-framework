@@ -1,0 +1,20 @@
+{
+  "classificationDefs": [
+    {
+      "category": "CLASSIFICATION",
+      "name": "PII",
+      "description": "Used for classifying a data which contains personal information, hence indicating confidential private",
+      "typeVersion": "1.0",
+      "attributeDefs": [],
+      "superTypes": []
+    },
+    {
+      "category": "CLASSIFICATION",
+      "name": "NON_PII",
+      "description": "Used for classifying a data which contains non personal information, hence indicating confidential lesser than private",
+      "typeVersion": "1.0",
+      "attributeDefs": [],
+      "superTypes": []
+    }
+  ]
+}

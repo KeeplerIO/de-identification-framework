@@ -15,7 +15,7 @@
             },
             "name": "a_party",
             "nullable": true,
-            "type": "string"
+            "type": "string",
             "doc": "The number that generates the call (caller)"
         },
         {

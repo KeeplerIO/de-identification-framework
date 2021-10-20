@@ -1,0 +1,101 @@
+{
+    "entities": 
+    [
+       {
+            "typeName": "avro_field",
+            "attributes": {
+                "doc": "The number that generates the call (caller)",
+                "name": "a_party",
+                "qualifiedName": "a_party"
+            },
+            "relationshipAttributes": {
+                "kafka_topics_references": [],
+                "meanings": [],
+                "schema": [],
+                "type": [
+                    {
+                        "guid": "5adf0ac2-78c1-4fbe-9837-b8a45e90d8ea",
+                        "typeName": "avro_type"
+                    }
+                ]
+            }
+        },
+        {
+            "typeName": "avro_field",
+            "attributes": {
+                "doc": "The number that receive the call (receiver)",
+                "name": "b_party",
+                "qualifiedName": "b_party"
+            },
+            "relationshipAttributes": {
+                "kafka_topics_references": [],
+                "meanings": [],
+                "schema": [],
+                "type": [
+                    {
+                        "guid": "5adf0ac2-78c1-4fbe-9837-b8a45e90d8ea",
+                        "typeName": "avro_type"
+                    }
+                ]
+            }
+        },
+        {
+            "typeName": "avro_field",
+            "attributes": {
+                "doc": "Type of call (national, international)",
+                "name": "call_type",
+                "qualifiedName": "call_type"
+            },
+            "relationshipAttributes": {
+                "kafka_topics_references": [],
+                "meanings": [],
+                "schema": [],
+                "type": [
+                    {
+                        "guid": "58cbe1b5-c9fc-4ee9-b50d-0add26da5f11",
+                        "typeName": "avro_type"
+                    }
+                ]
+            }
+        },
+        {
+            "typeName": "avro_field",
+            "attributes": {
+                "doc": "Call duration in seconds",
+                "name": "duration",
+                "qualifiedName": "duration"
+            },
+            "relationshipAttributes": {
+                "kafka_topics_references": [],
+                "meanings": [],
+                "schema": [],
+                "type": [
+                    {
+                        "guid": "58cbe1b5-c9fc-4ee9-b50d-0add26da5f11",
+                        "typeName": "avro_type"
+                    }
+                ]
+            }
+        },
+        {
+            "typeName": "avro_field",
+            "attributes": {
+                "doc": "Call start time",
+                "name": "starting_time",
+                "qualifiedName": "starting_time"
+            },
+            "relationshipAttributes": {
+                "kafka_topics_references": [],
+                "meanings": [],
+                "schema": [],
+                "type": [
+                    {
+                        "guid": "5adf0ac2-78c1-4fbe-9837-b8a45e90d8ea",
+                        "typeName": "avro_type"
+                    }
+                ]
+            }
+        } 
+        
+    ]
+}
