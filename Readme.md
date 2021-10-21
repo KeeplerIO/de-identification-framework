@@ -71,22 +71,22 @@ docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-
 curl -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" --data '{"compatibility": "NONE"}' http://localhost:8081/config
 ```
 
-## 4. Flink (Now it does not run in the Flink cluster.)
+## 4. Data pipeline Worker
 
 ### Data pipeline job Channel
 ```
-docker-compose exec producer python /opt/app/pyflink/data_pipeline_channel.py
+docker-compose exec datapipeline_worker python /opt/app/data_pipeline_jobs/data_pipeline_channel.py
 ```
 ### Data pipeline job Movie
 ```
-docker-compose exec producer python /opt/app/pyflink/data_pipeline_movie.py
+docker-compose exec datapipeline_worker python /opt/app/data_pipeline_jobs/data_pipeline_movie.py
 ```
 ### Data pipeline job Website
 ```
-docker-compose exec producer python /opt/app/pyflink/data_pipeline_website.py
+docker-compose exec datapipeline_worker python /opt/app/data_pipeline_jobs/data_pipeline_website.py
 ```
 
 ### Data pipeline job Mobile
 ```
-docker-compose exec producer python /opt/app/pyflink/data_pipeline_mobile.py
+docker-compose exec datapipeline_worker python /opt/app/data_pipeline_jobs/data_pipeline_mobile.py
 ```

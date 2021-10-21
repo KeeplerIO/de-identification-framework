@@ -39,59 +39,7 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
 
-  #control-center:
-  #  image: confluentinc/cp-enterprise-control-center:6.0.4
-  #  hostname: control-center
-  #  logging:
-  #    driver: none
-  #  depends_on:
-  #    - zookeeper
-  #    - kafka
-  #    - kafka-schema-registry
-  #  ports:
-  #    - "9021:9021"
-  #  environment:
-  #    CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
-  #    CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-  #    CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://kafka-schema-registry:8081"
-  #    CONTROL_CENTER_REPLICATION_FACTOR: 1
-  #    CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-  #    CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
-  #    CONFLUENT_METRICS_TOPIC_REPLICATION: 1
-  #    PORT: 9021
-
-  ##<------------ PYFLINK ------------>
-  #pyflink-jobmanager:
-  #  image: pyflink/playgrounds:1.13.0-rc2
-  #  #build: ./images
-  #  volumes:
-  #    - ./app:/opt/app
-  #  hostname: "pyflink-jobmanager"
-  #  expose:
-  #    - "6123"
-  #  ports:
-  #    - "8088:8088"
-  #    - "8081:8081"
-  #  command: jobmanager
-  #  environment:
-  #    - JOB_MANAGER_RPC_ADDRESS=pyflink-jobmanager
-  #    
-  #pyflink-taskmanager:
-  #  image: pyflink/playgrounds:1.13.0-rc2
-  #  volumes:
-  #    - ./app:/opt/app
-  #  expose:
-  #    - "6121"
-  #    - "6122"
-  #  depends_on:
-  #    - pyflink-jobmanager
-  #  command: taskmanager
-  #  links:
-  #    - pyflink-jobmanager:pyflink-jobmanager
-  #  environment:
-  #    - JOB_MANAGER_RPC_ADDRESS=pyflink-jobmanager
-
-  ##<------------ SPARK ------------>
+  #<------------ SPARK ------------>
   spark-master:
     build: images/pyspark
     hostname: "spark-master"
@@ -127,7 +75,7 @@ services:
       - ./keys:/opt/app/keys
       - ./src/custom_recognizers:/opt/app/custom_recognizers
   
-  # #<------------ DATA PRODUCER ---------->
+  #<------------ DATA PRODUCER ---------->
   producer:
     build: images/producer
     hostname: "producer"
@@ -135,19 +83,33 @@ services:
     depends_on: 
       - kafka
     environment: 
+      - KAFKA_SERVER=kafka:29092
+    volumes:
+      - ./src/data_generators:/opt/app/data_generators
+      - ./src/dummy_data:/opt/app/dummy_data
+      
+      
+  #<------------ DATA PIPELINE WORKER ---------->
+  datapipeline_worker:
+    build: images/datapipeline_worker
+    hostname: "datapipeline_worker"
+    tty: true
+    depends_on: 
+      - kafka
+      - atlas
+      - kafka-schema-registry
+    environment: 
       - ATLAS_HOST=atlas:21000
       - ATLAS_USER=${ATLAS_USER}
       - ATLAS_PASSWORD=${ATLAS_PASSWORD}
       - SCHEMA_SERVER=http://kafka-schema-registry:8081
       - KAFKA_SERVER=kafka:29092
     volumes:
-      - ./src/data_generators:/opt/app/data_generators
-      - ./src/dummy_data:/opt/app/dummy_data
-      - ./src/pyflink:/opt/app/pyflink #remove when flink is ready
-      - ./src/custom_recognizers:/opt/app/custom_recognizers #remove when flink is ready
-      - ./keys:/opt/app/keys #remove when flink is ready
-  # <------------ ATLAS ---------------->
+      - ./src/data_pipeline_jobs:/opt/app/data_pipeline_jobs
+      - ./src/custom_recognizers:/opt/app/custom_recognizers
+      - ./keys:/opt/app/keys
   
+  #<------------ ATLAS ---------------->
   atlas:
     image: sansarip/apache-atlas
     hostname: "atlas"
