@@ -100,7 +100,6 @@ services:
     volumes:
       - ./src/pyspark:/opt/app/pyspark
       - ./keys:/opt/app/keys
-      - ./schemas:/opt/app/schemas
       - ./src/custom_recognizers:/opt/app/custom_recognizers
     environment: 
       - SPARK_MODE=master
@@ -126,7 +125,6 @@ services:
     volumes:
       - ./src/pyspark:/opt/app/pyspark
       - ./keys:/opt/app/keys
-      - ./schemas:/opt/app/schemas
       - ./src/custom_recognizers:/opt/app/custom_recognizers
   
   # #<------------ DATA PRODUCER ---------->
@@ -155,7 +153,3 @@ services:
       - "21000:21000"
     volumes:
       - atlasdata:/opt/apache-atlas-2.0.0
-    # depends_on:
-    #   - "zookeeper"
-    #   - "kafka"
-    #   - "kafka-schema-registry"

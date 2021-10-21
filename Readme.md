@@ -90,15 +90,3 @@ docker-compose exec producer python /opt/app/pyflink/data_pipeline_website.py
 ```
 docker-compose exec producer python /opt/app/pyflink/data_pipeline_mobile.py
 ```
-
-#Datahub
-
-Ingest
-
-kafla
-
-We are gonna need a containter with datahub installed on it (now i am using the cloud9´s vm)
-
-pip install 'acryl-datahub[kafka]'
-
-datahub ingest -c recipes/kafka.yml

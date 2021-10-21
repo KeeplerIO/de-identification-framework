@@ -84,15 +84,11 @@ def infer_schema(kafka_server, kafka_topic, schema_name):
   df_with_metadata = add_metadata(df)
 
   schema = json.loads(df_with_metadata.schema.json())
-  print(schema)
   schema["type"] = "record"
   schema["name"] = schema_name
   schema["namespace"] = "keepler.pluto."+schema_name
   
-  # print('/opt/app/schemas/'+schema_name+'.avsc')
-  # obj = open('/opt/app/schemas/'+schema_name+'.avsc', 'w')
-  # obj.write(json.dumps(schema))
-  # obj.close
+  print(schema)
   
   kafka_topic_guid = atlas.create_kafka_datasource(kafka_topic)
   atlas.create_schema(schema, kafka_topic_guid)
