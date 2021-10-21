@@ -23,7 +23,17 @@ from uuid import uuid4
 
 import json
 
+import os
+
+import requests
+
 from cryptography.fernet import Fernet
+
+ATLAS_URI = "http://"+os.environ['ATLAS_HOST']+"/api/atlas/v2"
+ATLAS_USER = os.environ['ATLAS_USER']
+ATLAS_PASSWORD = os.environ['ATLAS_PASSWORD']
+KAFKA_SERVER = os.environ['KAFKA_SERVER']
+SCHEMA_SERVER = os.environ['SCHEMA_SERVER']
 
 def create_consumer(servers, topic):
     for i in range(0, 10):
@@ -36,19 +46,6 @@ def create_consumer(servers, topic):
                 )
             print("Consumer connected to Kafka")
             return consumer
-        except errors.NoBrokersAvailable:
-            print("Waiting for brokers to become available")
-            sleep(20)
-
-    raise RuntimeError("Failed to connect to brokers within 60 seconds")
-
-def create_producer(servers):
-    for i in range(0, 10):
-        try:
-            producer = KafkaProducer(bootstrap_servers=servers,
-                            value_serializer=lambda x: json.dumps(x).encode('utf-8'))
-            print("Producer connected to Kafka")
-            return producer
         except errors.NoBrokersAvailable:
             print("Waiting for brokers to become available")
             sleep(20)
@@ -74,18 +71,72 @@ def create_avro_producer(kafka, avro_serializer):
 
     raise RuntimeError("Failed to connect to brokers within 60 seconds")
 
-#TODO check the schema register
-def retrieve_schema(schema):
-    jsonFormatSchema = open("/opt/app/schemas/"+schema, "r").read()
-    return json.loads(jsonFormatSchema)
+def atlas_get_guid_by_query(query):
+    r = requests.get(ATLAS_URI+'/search/dsl', params=query, auth=(ATLAS_USER, ATLAS_PASSWORD))
+    if r.status_code == 200:
+        if "entities" in r.json():
+            return r.json()["entities"][0]["guid"]
+        else:
+            print(r.status_code)
+            print(r.text)
+            raise Exception('Schema does not exists in Atlas')
+    else:
+        raise Exception('Something went wrong when exectuting Atlas query')
+        
+def atlas_get_by_guid(guid):
+    r = requests.get(ATLAS_URI+'/entity/guid/'+guid, auth=(ATLAS_USER, ATLAS_PASSWORD))
+    if r.status_code == 200:
+        return r.json()
+    else:
+        raise Exception('Something went wrong when retrieving entity information from Atlas')
 
-def get_pii_entities_types(schema, name):
+def retrieve_schema(schema_name):
+    query_params = {
+        "limit": 1,
+        "offset": 0,
+        "query": "where name="+schema_name,
+        "typeName": "avro_schema"
+    }
+    
+    schema_guid = atlas_get_guid_by_query(query_params)
+    schema_info = atlas_get_by_guid(schema_guid)
+
+    schema = {}
+    schema['name'] = schema_info['entity']['attributes']['name']
+    schema['namespace'] = schema_info['entity']['attributes']['namespace']
+    schema['type'] = schema_info['entity']['attributes']['type']
+    schema['fields'] = []
+    
+    for field in schema_info['entity']['attributes']['fields']:
+        field_info = atlas_get_by_guid(field['guid'])
+        field_type = atlas_get_by_guid(field_info['entity']['attributes']['type'][0]['guid'])
+        f = {
+           "name": field_info['entity']['attributes']['name'],
+           "type": field_type['entity']['attributes']['name'],
+           "metadata": {}
+        }
+        #Check if the field is a PII
+        if (len(field_info['entity']['classifications']) > 0) and (any(pii['typeName'] != 'NON_PII' for pii in field_info['entity']['classifications'])):
+            f['metadata']['sensistive_data'] = True
+            f['metadata']['pii_types'] = []
+            for pii in field_info['entity']['classifications']:
+                f['metadata']['pii_types'].append(pii['typeName'])
+        else:
+            f['metadata']['sensistive_data'] = False
+            f['metadata']['pii_types'] = []
+        
+        schema['fields'].append(f)
+        
+    return schema
+
+def get_pii_entities_types(schema):
     entities_per_field = {}
 
     for field in schema["fields"]:
-        entities_per_field[field['name']] = []
-        for entity in field['metadata']['data_privacy_assetsment']:
-            entities_per_field[field['name']].append(entity["entity_type"])
+        if field['metadata']['sensistive_data'] == True:
+            entities_per_field[field['name']] = field['metadata']['pii_types']
+        else:
+            entities_per_field[field['name']] = []
 
     return entities_per_field
 
@@ -116,7 +167,7 @@ def shifting(date):
     else:
         return date
         
-def job_data_pipeline(schema_server,schema_name,kafka_servers,topic_input,topic_output,key_name ):
+def job_data_pipeline(schema_name,topic_input,topic_output,key_name ):
 
     print("Retrieving Key ....")
     encryption_key = retrieve_key(key_name)
@@ -127,19 +178,18 @@ def job_data_pipeline(schema_server,schema_name,kafka_servers,topic_input,topic_
     schema = retrieve_schema(schema_name)
     print(schema)
 
-    schema_registry_client = SchemaRegistryClient({'url': schema_server})
+    schema_registry_client = SchemaRegistryClient({'url': SCHEMA_SERVER})
 
     print("Creating Avro Serializer ...")
     avro_serializer = AvroSerializer(schema_str=json.dumps(schema),
                                          schema_registry_client=schema_registry_client,
                                          to_dict=serializer_function)
 
-    consumer = create_consumer(kafka_servers, topic_input)
-    #producer = create_producer(kafka_servers)
-    producer = create_avro_producer(kafka_servers, avro_serializer)
+    consumer = create_consumer([KAFKA_SERVER], topic_input)
+    producer = create_avro_producer([KAFKA_SERVER], avro_serializer)
 
     print("Extracting metadata PII information ...")
-    pii_per_field = get_pii_entities_types(schema, "from")
+    pii_per_field = get_pii_entities_types(schema)
     print(pii_per_field)
 
     print("Creating Presidio AnalyzerEngine ....")
@@ -179,6 +229,4 @@ def job_data_pipeline(schema_server,schema_name,kafka_servers,topic_input,topic_
                 message.value[key] = json.loads(anonymized_result)['text']
 
         print(message.value)
-
-        #producer.send(topic_output, message.value)
         producer.produce(topic_output, key=str(uuid4()), value=message.value)

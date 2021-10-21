@@ -91,7 +91,7 @@ services:
   #  environment:
   #    - JOB_MANAGER_RPC_ADDRESS=pyflink-jobmanager
 
-  ##<------------ SPARK BITAMI IMAGE ------------>
+  ##<------------ SPARK ------------>
   spark-master:
     build: images/pyspark
     hostname: "spark-master"
@@ -134,14 +134,18 @@ services:
     tty: true
     depends_on: 
       - kafka
+    environment: 
+      - ATLAS_HOST=atlas:21000
+      - ATLAS_USER=${ATLAS_USER}
+      - ATLAS_PASSWORD=${ATLAS_PASSWORD}
+      - SCHEMA_SERVER=http://kafka-schema-registry:8081
+      - KAFKA_SERVER=kafka:29092
     volumes:
       - ./src/data_generators:/opt/app/data_generators
       - ./src/dummy_data:/opt/app/dummy_data
       - ./src/pyflink:/opt/app/pyflink #remove when flink is ready
       - ./src/custom_recognizers:/opt/app/custom_recognizers #remove when flink is ready
       - ./keys:/opt/app/keys #remove when flink is ready
-      - ./schemas:/opt/app/schemas #remove when flink is ready
-      
   # <------------ ATLAS ---------------->
   
   atlas:
