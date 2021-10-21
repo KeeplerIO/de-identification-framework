@@ -156,6 +156,7 @@ We can navigate to one of its fields, such as **user_id**, we can see that it is
 ![User_Id Field Relationships](docs/images/user_id_field_2.png)
 
 Finally, if we go to the PII **USER_ID**, we can see that it is related to the PII classification type.
+
 ![User_id PII](docs/images/user_id_pii.png)
 
 ### Execute de-identification pipeline
@@ -231,4 +232,5 @@ curl -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" --data '{"
 
 ## Authors
 [Diego Prieto](https://www.linkedin.com/in/dpt92/)
+
 [Alexander Deriglasow](https://www.linkedin.com/in/alexander-deriglasow/)
