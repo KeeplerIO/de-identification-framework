@@ -16,9 +16,6 @@ It is advisable to read the articles beforehand to understand the problems to be
 
 explain the tech selection
 
-Kafka
-Apache Kafka is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications
-
 ## Quickstart
 
 We use Docker Compose to easily run the solution in an isolated environment built with Docker containers. Before starting, make sure you have install [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/)
@@ -132,7 +129,6 @@ For this we are going to use the spark jobs that you can find in the folder `src
 
 As in the message generation, we have to execute the jobs inside the containers, in this case inside the [Spark](https://spark.apache.org/) container.
 
-
 ```
 # Infer Scheme Channel
 docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_channel.py
@@ -149,7 +145,18 @@ docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-
 ### Schema inference checking
 Check in [Apache Atlas](https://atlas.apache.org/#/) that the schemas and their relationships have been generated correctly.
 
+We can see all properties, such as fields and relationships with other entities, such as [Apache Kafka](https://kafka.apache.org/) topics.
 
+![Channel Schema Properties](docs/images/channel_schema_1.png)
+![Channel Schema Relationships](docs/images/channel_schema_2.png)
+
+We can navigate to one of its fields, such as **user_id**, we can see that it is identified as **type string** and as PII of type **USER_ID**, one of our **custom PII**.
+
+![User_Id Field Properties](docs/images/user_id_field_1.png)
+![User_Id Field Relationships](docs/images/user_id_field_2.png)
+
+Finally, if we go to the PII **USER_ID**, we can see that it is related to the PII classification type.
+![User_id PII](docs/images/user_id_pii.png)
 
 ### Execute de-identification pipeline
 Once we have the schemas correctly generated and we have made corrections if necessary on [Apache Atlas](https://atlas.apache.org/#/), we proceed to use this information to de-identify the data.
