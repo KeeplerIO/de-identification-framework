@@ -1,18 +1,21 @@
 import json
 import requests
+import os
 
-ATLAS_URI = "http://18.202.26.160:8082/api/atlas/v2"#should be the docker container name 
-ATLAS_USER = "admin"
-ATLAS_PWD = "admin"
-
+ATLAS_URI = "http://"+os.environ['ATLAS_HOST']+"/api/atlas/v2"
+ATLAS_USER = os.environ['ATLAS_USER']
+ATLAS_PASSWORD = os.environ['ATLAS_PASSWORD']
 
 def create_entity(entity):
     entity["guid"] = -1
     payload = { "entity": entity }
-    r = requests.post(ATLAS_URI+'/entity', json=payload, auth=(ATLAS_USER, ATLAS_PWD))
+    r = requests.post(ATLAS_URI+'/entity', json=payload, auth=(ATLAS_USER, ATLAS_PASSWORD))
     if r.status_code == 200:
         return r.json()["guidAssignments"]["-1"]
     else:
+        print(ATLAS_URI,ATLAS_USER,ATLAS_PASSWORD)
+        print(r.status_code)
+        print(r.text)
         raise Exception('Something went wrong when creating a new entity in Atlas')
 
 def create_pii_type(pii_name):
@@ -30,7 +33,7 @@ def create_pii_type(pii_name):
       "enumDefs": [],
       "structDefs": []
     }
-    r = requests.post(ATLAS_URI+'/types/typedefs?type=classification', json=payload, auth=(ATLAS_USER, ATLAS_PWD))
+    r = requests.post(ATLAS_URI+'/types/typedefs?type=classification', json=payload, auth=(ATLAS_USER, ATLAS_PASSWORD))
     if r.status_code == 200:
         return r.json()['classificationDefs'][0]['guid']
     else:
@@ -40,7 +43,7 @@ def create_pii_type(pii_name):
 def create_pii_if_not_exists(pii_array):
     pii_info = {}
     for pii in pii_array:
-        r = requests.get(ATLAS_URI+'/types/classificationdef/name/'+pii, auth=(ATLAS_USER, ATLAS_PWD))
+        r = requests.get(ATLAS_URI+'/types/classificationdef/name/'+pii, auth=(ATLAS_USER, ATLAS_PASSWORD))
         if r.status_code == 200:
             pii_info[pii] = r.json()['guid']
         elif r.status_code == 404:
@@ -66,7 +69,7 @@ def get_field_type_guid(field_type):
         "query": "where name="+field_type,
         "typeName": "avro_type"
     }
-    r = requests.get(ATLAS_URI+'/search/dsl', params=query_params, auth=(ATLAS_USER, ATLAS_PWD))
+    r = requests.get(ATLAS_URI+'/search/dsl', params=query_params, auth=(ATLAS_USER, ATLAS_PASSWORD))
     
     if r.status_code == 200:
         if "entities" in r.json():
@@ -89,7 +92,7 @@ def classify_field(field_guid, pii_types):
             "entityGuids": [field_guid]
         }
         print(payload)
-        r = requests.post(ATLAS_URI+'/entity/bulk/classification', json=payload, auth=(ATLAS_USER, ATLAS_PWD))
+        r = requests.post(ATLAS_URI+'/entity/bulk/classification', json=payload, auth=(ATLAS_USER, ATLAS_PASSWORD))
         if r.status_code == 204 or (r.status_code == 400 and r.json()["errorCode"] == "ATLAS-400-00-01A"):
             return
         else:
@@ -157,17 +160,4 @@ def create_kafka_datasource(topic_name):
         }
     }
     return create_entity(kafka_payload)
-    
-
-def main():
-
-    kafka_topic="website_data"
-    f = open('../../schemas/website.avsc')
-    schema = json.load(f)
-    f.close()
-    
-    kafka_topic_guid = create_kafka_datasource(kafka_topic)
-    create_schema(schema, kafka_topic_guid)
             
-            
-main()

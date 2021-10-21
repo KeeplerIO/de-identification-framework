@@ -13,6 +13,7 @@ RUN pip3 install pyspark
 
 RUN pip3 install numpy
 RUN pip3 install pandas
+RUN pip3 install requests
 RUN pip3 install presidio-analyzer
 RUN pip3 install presidio-anonymizer
 RUN python -m spacy download en_core_web_lg
