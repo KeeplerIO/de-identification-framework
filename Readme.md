@@ -11,10 +11,73 @@ This technical demo is related to the following articles series published by [Ke
 It is advisable to read the articles beforehand to understand the problems to be solved and the proposed framework. 
 
 ## Solution Overview
- #TODO
- image here
+In the third part of our series of articles we explain the solution we have devised to solve the problem of data security and privacy compliant with opensource technologies.
+It is recommended to read it before continuing in order to understand the complete solution.
 
-explain the tech selection
+Once the solution is clear, a diagram is formed as follows:
+
+![Diagram Without Logos](docs/images/diagram_without_logos.png)
+
+For the purpose of this demo there are certain things that we have simplified, such as the variety of data sources, in this case we have stayed only with Events Streams.
+However the proposed solution can be modified to accept all types of data sources.
+
+If we place technology names in each of our components we are left with a diagram as follows.
+
+![Diagram With Logos](docs/images/diagram_with_logos.png)
+
+### Data Ingestion
+
+#### Apache Kafka
+
+As mentioned above, in this technical demonstration we will only cover streaming input data.
+
+For this we have chosen to use [Apache Kafka](https://kafka.apache.org/) due to its high throughput, capable of delivering messages with low latency.
+
+It allows us to scale the clusters to ingest trillions of messages per day, petabytes of data, while being fault tolerant.
+In addition, it allows us to perform joins, aggregations, filters, and transformations in event-time processing.
+
+Finally we have a large number of diverse libraries in all the predominant programming languages.
+
+#### Apache ZooKeepler
+
+[Apache Kafka](https://kafka.apache.org/) uses [Apache Zookeeper](https://zookeeper.apache.org/) to do leadership election of Kafka Broker and Topic Partition pairs. 
+
+It is also necessary for manage service discovery for Kafka Brokers that form the cluster. [Apache Zookeeper](https://zookeeper.apache.org/) sends changes of the topology to Kafka, so each node in the cluster knows when a new broker joined, a Broker died, a topic was removed or a topic was added, etc.
+
+#### Confluent Schema Registry
+
+We use the [Schema Registry](https://docs.confluent.io/platform/current/schema-registry/) to make sure that all the messages we have in our Kafka topics comply with the required schema.
+
+[Schema Registry](https://docs.confluent.io/platform/current/schema-registry/) lives outside of and separately from your Kafka Brokers. Your producers and consumers still talk to [Apache Kafka](https://kafka.apache.org/) to publish and read data (messages) to topics. Concurrently, they can also talk to [Schema Registry](https://docs.confluent.io/platform/current/schema-registry/) to send and retrieve schemas that describe the data models for the messages.
+
+However, this will not be our data catalog, but it is a very useful tool to use in conjunction with it.
+
+### Apache Spark
+
+
+
+spark + pyspark
+
+### PII Identification
+
+Identifying which part of your data is PII is the main task of this solution.
+[Microsoft Presidio](https://microsoft.github.io/presidio/) offers a solution to preserve privacy in a simpler way, democratizing de-identification technologies and introducing transparency into decisions.
+
+In addition, it allows us to extend its functionality by allowing us to create custom PII definitions in order to adapt it to our needs.
+
+### Data Catalog
+
+Looking at the Apache Atlas definition, this is exactly what we need.
+
+> Apache Atlas provides open metadata management and governance capabilities for organizations to build a catalog of their data assets, classify and govern these assets and provide collaboration capabilities around these data assets for data scientists, analysts and the data governance team.
+
+We will use Apache Atlas to store the inferred schemas, as well as the relationships with the PII types we find in their fields.
+
+### De-Identification Pipeline
+pipeline en python (flink)
+avro
+
+
 
 ## Quickstart
 
