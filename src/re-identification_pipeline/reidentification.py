@@ -2,7 +2,8 @@ from kafka import KafkaConsumer, KafkaProducer, errors
 from time import sleep
 from datetime import datetime, timedelta
 
-from presidio_analyzer import AnalyzerEngine, RecognizerRegistry
+from presidio_analyzer import DeanonymizeEngine, RecognizerRegistry
+
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities.engine import AnonymizerResult, OperatorConfig
 from presidio_anonymizer.entities import RecognizerResult
@@ -35,7 +36,7 @@ ATLAS_PASSWORD = os.environ['ATLAS_PASSWORD']
 KAFKA_SERVER = os.environ['KAFKA_SERVER']
 SCHEMA_SERVER = os.environ['SCHEMA_SERVER']
 
-DELTA_TIME = -2
+DELTA_TIME = +2
 
 def create_consumer(servers, topic):
     for i in range(0, 10):
@@ -152,6 +153,9 @@ def retrieve_key(key_name):
 def encrypt(str, key):
     return Fernet(key).encrypt(str.encode()).decode()
 
+def decrypt(str, key):
+    return Fernet(key).decrypt(str.encode()).decode()
+
 def validate_date(date_text):
     try:
         if date_text != datetime.strptime(date_text, "%Y-%m-%d").strftime('%Y-%m-%d'):
@@ -160,7 +164,7 @@ def validate_date(date_text):
     except ValueError:
         return False
 
-# TODO Have a variable shifting per user or record id and store it.
+# TODO Have a variable shifting per user and store it.
 def shifting(date):
     if validate_date(date):
         datetime_obj= datetime.strptime(date, '%d-%M-%Y')
@@ -194,16 +198,8 @@ def job_data_pipeline(schema_name,topic_input,topic_output,key_name ):
     pii_per_field = get_pii_entities_types(schema)
     print(pii_per_field)
 
-    print("Creating Presidio AnalyzerEngine ....")
-    registry = RecognizerRegistry()
-    registry.load_predefined_recognizers()
-    registry.add_recognizer(user_recognizer.get_recognizer())
-    registry.add_recognizer(custom_card_recognizer.get_recognizer())
-
-    analyzer = AnalyzerEngine(registry=registry)
-
-    print("Creating Presidio AnonymizerEngine ....")
-    anonymizer = AnonymizerEngine()
+    print("Creating Presidio DeanonymizeEngine ....")
+    deanonymizer = DeanonymizeEngine()
 
     for message in consumer:
         for key in message.value.keys():
@@ -211,21 +207,27 @@ def job_data_pipeline(schema_name,topic_input,topic_output,key_name ):
             if len(pii_entities):
                 analyzer_results=None
                 if len(pii_entities) > 1: # Free text field
-                    analyzer_results = analyzer.analyze(text=str(message.value[key]), entities=pii_entities, language='en')                               
+                    ## Outside the purpose of the demo.
+                    ### The analysis of the free text fields during the de-identification process should be saved for later reversal.
+                    ### Another way would be to use predefined masks according to the type of PII and then parse the free text field.
+                    #### For example John Smith -> PERSON-dbcbcf7f7af8f851538eef7b8e58c5bee0b8cfdac4a
+                    #### Where PERSON is the type of PII, followed by the encrypted value
+                    analyzer_results = []
                 else:
                     analyzer_results=[
-                        RecognizerResult(entity_type=pii_entities[0], start=0, end=len(str(message.value[key])), score=1 )
+                        AnonymizerResult(entity_type=pii_entities[0], start=0, end=len(str(message.value[key])) )
                     ]
-                anonymized_result = anonymizer.anonymize(
+                anonymized_result = deanonymizer.anonymize(
                     text=str(message.value[key]),
                     analyzer_results=analyzer_results,
                     operators={
-                        "USER_ID": OperatorConfig("custom", {"lambda":  lambda x: encrypt(x, encryption_key)}),
+                        # The De-Identification methods based on hashing are reversible only using brute force
+                        "USER_ID": OperatorConfig("custom", {"lambda":  lambda x: decrypt(x, encryption_key)}),
                         "DATE_TIME" : OperatorConfig("custom",{"lambda": lambda x: shifting(x)}),
-                        "CREDIT_CARD" : OperatorConfig("hash", {"hash_type": "sha256" }),
-                        "CUSTOM_CREDIT_CARD" : OperatorConfig("hash", {"hash_type": "sha256" }),
+                        #"CREDIT_CARD" : OperatorConfig("hash", {"hash_type": "sha256" }),
+                        #"CUSTOM_CREDIT_CARD" : OperatorConfig("hash", {"hash_type": "sha256" }),
                         "DOMAIN_NAME" : OperatorConfig("custom", {"lambda": lambda x: x }),
-                        "PHONE_NUMBER" : OperatorConfig("hash", {"hash_type": "sha256" }),
+                        # "PHONE_NUMBER" : OperatorConfig("hash", {"hash_type": "sha256" }),
                     }
                 ).to_json()
                 message.value[key] = json.loads(anonymized_result)['text']
