@@ -52,9 +52,9 @@ We use the [Schema Registry](https://docs.confluent.io/platform/current/schema-r
 
 However, this will not be our data catalog, but it is a very useful tool to use in conjunction with it.
 
-### Apache Spark
+### Schema Inference
 
-
+spark + pyspark
 
 spark + pyspark
 
@@ -74,12 +74,23 @@ Looking at the Apache Atlas definition, this is exactly what we need.
 We will use Apache Atlas to store the inferred schemas, as well as the relationships with the PII types we find in their fields.
 
 ### De-Identification Pipeline
-pipeline en python (flink)
-avro
+The last part of our solution is the data de-identification process.
 
+In order not to complicate the solution, these pipelines are normal python processes, but in an enterprise solution they should be executed in a distributed processing framework such as [Apache Flink](https://flink.apache.org/).
 
+However, in our solution, this process is a custom Python script.
+
+#### Apache Avro
+
+During this process, we are serializing the data in [Apache Avro](https://avro.apache.org/) format. 
+
+[Apache Avro](https://avro.apache.org/) facilitates the exchange of big data between programs written in any language. With the serialization service, programs can efficiently serialize data into files or into messages.
+
+[Apache Avro](https://avro.apache.org/) stores the data definition in JSON format making it easy to read and interpret; the data itself is stored in binary format making it compact and efficient.
 
 ## Quickstart
+
+Now that we know the problems, the proposed solution and the chosen technologies, let's start with the demonstration of the solution.
 
 We use Docker Compose to easily run the solution in an isolated environment built with Docker containers. Before starting, make sure you have install [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/)
 
@@ -224,8 +235,6 @@ Finally, if we go to the PII **USER_ID**, we can see that it is related to the P
 
 ### Execute de-identification pipeline
 Once we have the schemas correctly generated and we have made corrections if necessary on [Apache Atlas](https://atlas.apache.org/#/), we proceed to use this information to de-identify the data.
-
-In order not to complicate the solution, these pipelines are normal python processes, but in an enterprise solution they should be executed in a distributed processing framework such as [Apache Flink](https://flink.apache.org/).
 
 You can find these scripts in the `src/data_pipeline_jobs` folder. To execute them we are going to use the **datapipeline_worker container**.
 
