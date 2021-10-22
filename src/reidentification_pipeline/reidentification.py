@@ -55,6 +55,31 @@ def create_consumer(servers, topic):
 
     raise RuntimeError("Failed to connect to brokers within 60 seconds")
 
+def create_avro_consumer():
+    string_deserializer = StringDeserializer('utf_8')
+
+    consumer_conf = {'bootstrap.servers': args.bootstrap_servers,
+                     'key.deserializer': string_deserializer,
+                     'value.deserializer': avro_deserializer,
+                     'group.id': args.group,
+                     'auto.offset.reset': "earliest"}
+
+    consumer = DeserializingConsumer(consumer_conf)
+    consumer.subscribe([topic])
+
+def create_producer(servers):
+    for i in range(0, 10):
+        try:
+            producer = KafkaProducer(bootstrap_servers=servers,
+                            value_serializer=lambda x: json.dumps(x).encode('utf-8'))
+            print("Producer connected to Kafka")
+            return producer
+        except errors.NoBrokersAvailable:
+            print("Waiting for brokers to become available")
+            sleep(20)
+
+    raise RuntimeError("Failed to connect to brokers within 60 seconds")
+
 def create_avro_producer(kafka, avro_serializer):
     print("Connecting to Kafka brokers")
     for i in range(0, 10):

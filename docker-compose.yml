@@ -106,6 +106,7 @@ services:
       - KAFKA_SERVER=kafka:29092
     volumes:
       - ./src/data_pipeline_jobs:/opt/app/data_pipeline_jobs
+      - ./src/reidentification_pipeline:/opt/app/reidentification_pipeline
       - ./src/custom_recognizers:/opt/app/custom_recognizers
       - ./keys:/opt/app/keys
   
