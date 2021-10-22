@@ -61,7 +61,7 @@ It also allows us to perform exploratory data analysis on petabyte-scale data wi
 
 To interact with Spark, we are going to make use of the  [PySpark](http://spark.apache.org/docs/latest/api/python/) library.
 
-[PySpark](http://spark.apache.org/docs/latest/api/python/) is an interface for [Apache Spark](https://spark.apache.org/) in Python. It not only allows you to write Spark applications using Python APIs, but also provides the [PySpark](http://spark.apache.org/docs/latest/api/python/) shell for interactively analyzing your data in a distributed environment. [PySpark](http://spark.apache.org/docs/latest/api/python/) supports most of Spark’s features such as Spark SQL, DataFrame, Streaming, MLlib (Machine Learning) and Spark Core.
+[PySpark](http://spark.apache.org/docs/latest/api/python/) is an interface for [Apache Spark](https://spark.apache.org/) in Python. It not only allows you to write Spark applications using Python APIs, but also provides the interacting shell for analyzing your data in a distributed environment. [PySpark](http://spark.apache.org/docs/latest/api/python/) supports most of Spark’s features such as Spark SQL, DataFrame, Streaming, MLlib (Machine Learning) and Spark Core.
 
 ### PII Identification
 
@@ -87,7 +87,7 @@ However, in our solution, this process is a custom Python script.
 
 #### Apache Avro
 
-During this process, we are serializing the data in [Apache Avro](https://avro.apache.org/) format. 
+During the De-Identification pipeline, we are serializing the data in [Apache Avro](https://avro.apache.org/) format. 
 
 [Apache Avro](https://avro.apache.org/) facilitates the exchange of big data between programs written in any language. With the serialization service, programs can efficiently serialize data into files or into messages.
 
