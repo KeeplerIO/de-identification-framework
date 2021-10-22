@@ -54,9 +54,14 @@ However, this will not be our data catalog, but it is a very useful tool to use 
 
 ### Schema Inference
 
-spark + pyspark
+For the schema inference process, we need a technology that allows us to interact with all kinds of data sources.
+[Apache Spark](https://spark.apache.org/) is our choice since it unifies your data processing in batch and streaming in real time, using your preferred language: Python, SQL, Scala, Java or R.
 
-spark + pyspark
+It also allows us to perform exploratory data analysis on petabyte-scale data without resorting to downsampling.
+
+To interact with Spark, we are going to make use of the  [PySpark](http://spark.apache.org/docs/latest/api/python/) library.
+
+[PySpark](http://spark.apache.org/docs/latest/api/python/) is an interface for [Apache Spark](https://spark.apache.org/) in Python. It not only allows you to write Spark applications using Python APIs, but also provides the [PySpark](http://spark.apache.org/docs/latest/api/python/) shell for interactively analyzing your data in a distributed environment. [PySpark](http://spark.apache.org/docs/latest/api/python/) supports most of Spark’s features such as Spark SQL, DataFrame, Streaming, MLlib (Machine Learning) and Spark Core.
 
 ### PII Identification
 
