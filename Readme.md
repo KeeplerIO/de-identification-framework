@@ -286,6 +286,7 @@ such as.
 ```
 { 'channel_name': 'HBO', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'date': '20-04-2020', 'user_id': 'gAAAAAAABhcXeqXauz460yFKlnYr1syUCduDKq81Kqq_88hz5ZRjJI78bPkDQZr0oKyTsJ94f8FTONYpHrlgA83hW0aSrDLtAkZpg=='}
 ```
+
 This is why it is **IMPORTANT TO REVIEW** the schema inferred in [Apache Atlas](https://atlas.apache.org/#/) before executing the de-identification process, since this field should **never** be taken as **PII of type PERSON**.
 
 ### Execute the re-identification-pipeline
