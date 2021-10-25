@@ -26,13 +26,17 @@ def create_pii_type(pii_name):
           "name": pii_name,
           "description":"",
           "attributeDefs": [],
-          "superTypes": ["PII"]
+          "superTypes": []
         }
       ],
       "entityDefs": [],
       "enumDefs": [],
       "structDefs": []
     }
+
+    if pii_name != "PII" and pii_name != "NON_PII":
+        payload["classificationDefs"][0]["superTypes"].append("PII")
+
     r = requests.post(ATLAS_URI+'/types/typedefs?type=classification', json=payload, auth=(ATLAS_USER, ATLAS_PASSWORD))
     if r.status_code == 200:
         return r.json()['classificationDefs'][0]['guid']
@@ -81,6 +85,7 @@ def get_field_type_guid(field_type):
         
         
 def classify_field(field_guid, pii_types):
+    create_pii_if_not_exists(["PII", "NON_PII"])
     create_pii_if_not_exists(pii_types)
     for pii in pii_types:
         payload={
@@ -91,7 +96,6 @@ def classify_field(field_guid, pii_types):
             },
             "entityGuids": [field_guid]
         }
-        print(payload)
         r = requests.post(ATLAS_URI+'/entity/bulk/classification', json=payload, auth=(ATLAS_USER, ATLAS_PASSWORD))
         if r.status_code == 204 or (r.status_code == 400 and r.json()["errorCode"] == "ATLAS-400-00-01A"):
             return
@@ -100,6 +104,7 @@ def classify_field(field_guid, pii_types):
         
 
 def create_field(field):
+
     field_payload = {
         "typeName": "avro_field",
         "attributes": {
