@@ -111,7 +111,7 @@ services:
       - SCHEMA_SERVER=http://kafka-schema-registry:8081
       - KAFKA_SERVER=kafka:29092
     volumes:
-      - ./src/deidentifcation_pipeline:/opt/app/deidentifcation_pipeline
+      - ./src/deidentification_pipeline:/opt/app/deidentification_pipeline
       - ./src/reidentification_pipeline:/opt/app/reidentification_pipeline
       - ./src/custom_recognizers:/opt/app/custom_recognizers
       - ./keys:/opt/app/keys
