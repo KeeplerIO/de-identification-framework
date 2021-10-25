@@ -138,7 +138,6 @@ It will show you the following output:
 
 ```
 __confluent.support.metrics
-__consumer_offsets
 _schemas
 channel-anonymised-data
 channel-raw-data
