@@ -154,7 +154,7 @@ def encrypt(str, key):
 
 def validate_date(date_text):
     try:
-        if date_text != datetime.strptime(date_text, "%Y-%m-%d").strftime('%Y-%m-%d'):
+        if date_text != datetime.strptime(date_text, '%d-%M-%Y').strftime('%d-%M-%Y'):
             raise ValueError
         return True
     except ValueError:
