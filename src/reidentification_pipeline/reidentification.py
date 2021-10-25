@@ -1,8 +1,6 @@
 from time import sleep
 from datetime import datetime, timedelta
 
-from presidio_anonymizer.entities.engine import AnonymizerResult, OperatorConfig
-
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka import DeserializingConsumer
 from confluent_kafka.schema_registry.avro import AvroDeserializer

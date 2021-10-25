@@ -1,4 +1,4 @@
-from inference_model import infer_schema
+from schema_inference import infer_schema
 
 KAFKA_SERVER='kafka:29092'
 KAFKA_TOPIC='movie-raw-data'

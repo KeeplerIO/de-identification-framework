@@ -72,11 +72,11 @@ In addition, it allows us to extend its functionality by allowing us to create c
 
 ### Data Catalog
 
-Looking at the Apache Atlas definition, this is exactly what we need.
+Looking at the [Apache Atlas](https://atlas.apache.org/#/) definition, this is exactly what we need.
 
 > Apache Atlas provides open metadata management and governance capabilities for organizations to build a catalog of their data assets, classify and govern these assets and provide collaboration capabilities around these data assets for data scientists, analysts and the data governance team.
 
-We will use Apache Atlas to store the inferred schemas, as well as the relationships with the PII types we find in their fields.
+We will use [Apache Atlas](https://atlas.apache.org/#/) to store the inferred schemas, as well as the relationships with the PII types we find in their fields.
 
 ### De-Identification Pipeline
 The last part of our solution is the data de-identification process.
@@ -204,22 +204,22 @@ The next step is to infer the schema and detect the PII in the sample messages.
 We have created custom PII to see how [Presidio](https://microsoft.github.io/presidio/) behaves, such as **CUSTOM_CREDIT_CARD** or **USER_ID**.
 You can find its definition in the `src/custom_recognizers` folder.
 
-For this we are going to use the spark jobs that you can find in the folder `src/pyspark`.
+For this we are going to use the spark jobs that you can find in the folder `src/schema_inference`.
 
 As in the message generation, we have to execute the jobs inside the containers, in this case inside the [Spark](https://spark.apache.org/) container.
 
 ```
 # Infer Scheme Channel
-docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_channel.py
+docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/schema_inference/schema_inference_channel.py
 
 # Infer Scheme Movie
-docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_movie.py
+docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/schema_inference/schema_inference_movie.py
 
 # Infer Scheme Website
-docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_website.py
+docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/schema_inference/schema_inference_website.py
 
 # Infer Scheme Mobile
-docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/pyspark/inference_model_mobile.py
+docker-compose exec spark-master spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 /opt/app/schema_inference/schema_inference_mobile.py
 ```
 ### Schema inference checking
 Check in [Apache Atlas](https://atlas.apache.org/#/) that the schemas and their relationships have been generated correctly.
@@ -241,20 +241,20 @@ Finally, if we go to the PII **USER_ID**, we can see that it is related to the P
 ### Execute de-identification pipeline
 Once we have the schemas correctly generated and we have made corrections if necessary on [Apache Atlas](https://atlas.apache.org/#/), we proceed to use this information to de-identify the data.
 
-You can find these scripts in the `src/data_pipeline_jobs` folder. To execute them we are going to use the **datapipeline_worker container**.
+You can find these scripts in the `src/deidentification_pipeline` folder. To execute them we are going to use the **datapipeline_worker container**.
 
 ```
-# Data pipeline job Channel
-docker-compose exec datapipeline_worker python /opt/app/data_pipeline_jobs/data_pipeline_channel.py
+# De-Identification pipeline Channel
+docker-compose exec datapipeline_worker python /opt/app/deidentification_pipeline/deidentification_channel.py
 
-# Data pipeline job Movie
-docker-compose exec datapipeline_worker python /opt/app/data_pipeline_jobs/data_pipeline_movie.py
+# De-Identification pipeline Movie
+docker-compose exec datapipeline_worker python /opt/app/deidentification_pipeline/deidentification_movie.py
 
-# Data pipeline job Website
-docker-compose exec datapipeline_worker python /opt/app/data_pipeline_jobs/data_pipeline_website.py
+# De-Identification pipeline Website
+docker-compose exec datapipeline_worker python /opt/app/deidentification_pipeline/deidentification_website.py
 
-# Data pipeline job Mobile
-docker-compose exec datapipeline_worker python /opt/app/data_pipeline_jobs/data_pipeline_mobile.py
+# De-Identification pipeline Mobile
+docker-compose exec datapipeline_worker python /opt/app/deidentification_pipeline/deidentification_mobile.py
 ```
 
 Finally you can check the messages in the output topics, for example in the **channel-anonymised-data**.
@@ -278,34 +278,80 @@ Finally you can check the messages in the output topics, for example in the **ch
 {'channel_name': 'Disney Channel', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'date': '13-10-2020', 'user_id': 'gAAAAABhcXeqEuYw2LKNcczosz93fiJY4yN5CiVFwtT53FIAMDchFscFcVLmxcpkzt3rCmART-oGzvqDluHsAgNGh8W73pfvUQ=='}
 ```
 
-## Useful Commands
-### Apache Kafka
-####  Create Kafka Topic
+You may notice that in some cases, Presidio](https://microsoft.github.io/presidio/) identified some tv show names as **PII** of type **PERSON**, 
+such as.
+
 ```
-docker-compose exec kafka kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic <TOPIC>
+{'channel_name': 'HBO', 'tv_show': 'Barry', 'tv_show_type': 'Comedy', 'date': '20-04-2020', 'user_id': 'user-45678'}
 ```
-####  List Topics
 ```
-docker-compose exec kafka kafka-topics --list --zookeeper zookeeper:2181
+{ 'channel_name': 'HBO', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'date': '20-04-2020', 'user_id': 'gAAAAAAABhcXeqXauz460yFKlnYr1syUCduDKq81Kqq_88hz5ZRjJI78bPkDQZr0oKyTsJ94f8FTONYpHrlgA83hW0aSrDLtAkZpg=='}
 ```
-####  Describe Topic
+This is why it is **IMPORTANT TO REVIEW** the schema inferred in [Apache Atlas](https://atlas.apache.org/#/) before executing the de-identification process, since this field should **never** be taken as **PII of type PERSON**.
+
+### Execute the re-identification-pipeline
+
+The last functionality that remains to be demonstrated is the reverse process, or how to return the data to its original state.
+This is what is called the re-identification of the data.
+
+You can find these scripts in the src/reidentification_pipeline folder. To execute them we are going to use the datapipeline_worker container.
+
+For this process, we have not used Presidio, since the re-identification part or as he calls deanonymization is very unversatile, but nevertheless we have followed a similar approach.
+
 ```
-docker-compose exec kafka kafka-topics --describe --zookeeper zookeeper:2181 --topic <TOPIC>
-```
-####  Remove Topic
-```
-docker-compose exec kafka kafka-topics --zookeeper zookeeper:2181 --topic <TOPIC> --delete
-```
-#### See messages
-```
-docker-compose exec kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic <TOPIC> --from-beginning
+# Re-Identification Channel
+docker-compose exec datapipeline_worker python /opt/app/reidentification_pipeline/reidentification_channel.py
+
+# Re-Identification Movie
+docker-compose exec datapipeline_worker python /opt/app/reidentification_pipeline/reidentification_movie.py
+
+# Re-Identification Website
+docker-compose exec datapipeline_worker python /opt/app/reidentification_pipeline/reidentification_website.py
+
+# Re-Identification Mobile
+docker-compose exec datapipeline_worker python /opt/app/reidentification_pipeline/reidentification_mobile.py
 ```
 
-### Schema Registry
-#### Schema compatibility problems during testing
+Finally you can check the the output messages, for example in the **channel data**.
+
 ```
-curl -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" --data '{"compatibility": "NONE"}' http://localhost:8081/config
+{'channel_name': 'Fox', 'date': '12-10-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-12345'}
+{'channel_name': 'Fox', 'date': '12-10-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-23456'}
+{'channel_name': 'Fox', 'date': '12-10-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-45678'}
+{'channel_name': 'Fox', 'date': '07-09-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-12345'}
+{'channel_name': 'Fox', 'date': '23-08-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-87654'}
+{'channel_name': 'Fox', 'date': '23-08-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-12345'}
+{'channel_name': 'HBO', 'date': '20-04-2020', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'user_id': 'user-23456'}
+{'channel_name': 'HBO', 'date': '20-04-2020', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'user_id': 'user-45678'}
+{'channel_name': 'HBO', 'date': '13-05-2020', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'user_id': 'user-98765'}
+{'channel_name': 'CBS', 'date': '22-02-2020', 'tv_show': 'Blood & Treasure', 'tv_show_type': 'Action', 'user_id': 'user-23456'}
+{'channel_name': 'CBS', 'date': '18-02-2020', 'tv_show': 'Blood & Treasure', 'tv_show_type': 'Action', 'user_id': 'user-87654'}
+{'channel_name': 'CBS', 'date': '15-05-2020', 'tv_show': 'Blood & Treasure', 'tv_show_type': 'Action', 'user_id': 'user-87654'}
+{'channel_name': 'CBS', 'date': '15-05-2020', 'tv_show': 'Blood & Treasure', 'tv_show_type': 'Action', 'user_id': 'user-45678'}
+{'channel_name': 'MTV', 'date': '14-06-2020', 'tv_show': 'Siesta Key', 'tv_show_type': 'Reality', 'user_id': 'user-98765'}
+{'channel_name': 'MTV', 'date': '20-08-2020', 'tv_show': 'Siesta Key', 'tv_show_type': 'Reality', 'user_id': 'user-98765'}
+{'channel_name': 'Disney Channel', 'date': '13-10-2020', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'user_id': 'user-12345'}
+{'channel_name': 'Fox', 'date': '12-10-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-12345'}
+{'channel_name': 'Fox', 'date': '12-10-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-23456'}
+{'channel_name': 'Fox', 'date': '12-10-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-45678'}
+{'channel_name': 'Fox', 'date': '07-09-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-12345'}
+{'channel_name': 'Fox', 'date': '23-08-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-87654'}
+{'channel_name': 'Fox', 'date': '23-08-2020', 'tv_show': '9-1-1', 'tv_show_type': 'Drama', 'user_id': 'user-12345'}
+{'channel_name': 'HBO', 'date': '20-04-2020', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'user_id': 'user-23456'}
+{'channel_name': 'HBO', 'date': '20-04-2020', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'user_id': 'user-45678'}
+{'channel_name': 'HBO', 'date': '13-05-2020', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'user_id': 'user-98765'}
+{'channel_name': 'CBS', 'date': '22-02-2020', 'tv_show': 'Blood & Treasure', 'tv_show_type': 'Action', 'user_id': 'user-23456'}
+{'channel_name': 'CBS', 'date': '18-02-2020', 'tv_show': 'Blood & Treasure', 'tv_show_type': 'Action', 'user_id': 'user-87654'}
+{'channel_name': 'CBS', 'date': '15-05-2020', 'tv_show': 'Blood & Treasure', 'tv_show_type': 'Action', 'user_id': 'user-87654'}
+{'channel_name': 'CBS', 'date': '15-05-2020', 'tv_show': 'Blood & Treasure', 'tv_show_type': 'Action', 'user_id': 'user-45678'}
+{'channel_name': 'MTV', 'date': '14-06-2020', 'tv_show': 'Siesta Key', 'tv_show_type': 'Reality', 'user_id': 'user-98765'}
+{'channel_name': 'MTV', 'date': '20-08-2020', 'tv_show': 'Siesta Key', 'tv_show_type': 'Reality', 'user_id': 'user-98765'}
+{'channel_name': 'Disney Channel', 'date': '13-10-2020', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'user_id': 'user-12345'}
 ```
+
+It is worth mentioning that during the de-identification process different methods were chosen depending on the type of PII, for example for **CREDIT_CARD** we used the method of hashing the value with sha256, which is only reversible by brute force.
+
+This is why it is **important** to **choose well the de-identification method** you want to use to make sure that if you need to recover the original data at some point you will not encounter such a problem.
 
 ## Authors
 [Diego Prieto](https://www.linkedin.com/in/dpt92/)

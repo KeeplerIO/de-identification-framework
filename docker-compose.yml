@@ -11,33 +11,33 @@ services:
 
   #<------------ KAFKA ------------>
   kafka:
-    depends_on:
-    - zookeeper
-    environment:
-    - KAFKA_BROKER_ID=1
-    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-    - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-    - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-    - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
-    - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
-    - KAFKA_HEAP_OPTS=-Xms256m -Xmx256m
-    hostname: kafka
     image: confluentinc/cp-kafka:5.4.0
+    hostname: kafka
     ports:
-    - 29092:29092
-    - 9092:9092
+      - 29092:29092
+      - 9092:9092
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_HEAP_OPTS=-Xms256m -Xmx256m
+    depends_on:
+      - zookeeper
 
   kafka-schema-registry:
     image: confluentinc/cp-schema-registry:5.3.6
     hostname: kafka-schema-registry
-    depends_on:
-      - zookeeper
-      - kafka
     ports:
       - "8081:8081"
     environment:
       SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+    depends_on:
+      - zookeeper
+      - kafka
 
   #<------------ SPARK ------------>
   spark-master:
@@ -45,15 +45,15 @@ services:
     hostname: "spark-master"
     expose: 
       - "7077"
-    volumes:
-      - ./src/pyspark:/opt/app/pyspark
-      - ./keys:/opt/app/keys
-      - ./src/custom_recognizers:/opt/app/custom_recognizers
     environment: 
       - SPARK_MODE=master
       - ATLAS_HOST=atlas:21000
       - ATLAS_USER=${ATLAS_USER}
       - ATLAS_PASSWORD=${ATLAS_PASSWORD}
+    volumes:
+      - ./src/schema_inference:/opt/app/schema_inference
+      - ./src/custom_recognizers:/opt/app/custom_recognizers
+      - ./keys:/opt/app/keys
 
   spark-slave:
     build: images/pyspark
@@ -68,48 +68,13 @@ services:
       - ATLAS_HOST=atlas:21000
       - ATLAS_USER=${ATLAS_USER}
       - ATLAS_PASSWORD=${ATLAS_PASSWORD}
+    volumes:
+      - ./src/schema_inference:/opt/app/schema_inference
+      - ./src/custom_recognizers:/opt/app/custom_recognizers
+      - ./keys:/opt/app/keys
     depends_on:
       - spark-master
-    volumes:
-      - ./src/pyspark:/opt/app/pyspark
-      - ./keys:/opt/app/keys
-      - ./src/custom_recognizers:/opt/app/custom_recognizers
-  
-  #<------------ DATA PRODUCER ---------->
-  producer:
-    build: images/producer
-    hostname: "producer"
-    tty: true
-    depends_on: 
-      - kafka
-    environment: 
-      - KAFKA_SERVER=kafka:29092
-    volumes:
-      - ./src/data_generators:/opt/app/data_generators
-      - ./src/dummy_data:/opt/app/dummy_data
-      
-      
-  #<------------ DATA PIPELINE WORKER ---------->
-  datapipeline_worker:
-    build: images/datapipeline_worker
-    hostname: "datapipeline_worker"
-    tty: true
-    depends_on: 
-      - kafka
-      - atlas
-      - kafka-schema-registry
-    environment: 
-      - ATLAS_HOST=atlas:21000
-      - ATLAS_USER=${ATLAS_USER}
-      - ATLAS_PASSWORD=${ATLAS_PASSWORD}
-      - SCHEMA_SERVER=http://kafka-schema-registry:8081
-      - KAFKA_SERVER=kafka:29092
-    volumes:
-      - ./src/data_pipeline_jobs:/opt/app/data_pipeline_jobs
-      - ./src/reidentification_pipeline:/opt/app/reidentification_pipeline
-      - ./src/custom_recognizers:/opt/app/custom_recognizers
-      - ./keys:/opt/app/keys
-  
+
   #<------------ ATLAS ---------------->
   atlas:
     image: sansarip/apache-atlas
@@ -120,3 +85,37 @@ services:
       - "21000:21000"
     volumes:
       - atlasdata:/opt/apache-atlas-2.0.0
+  
+  #<------------ DATA PRODUCER ---------->
+  producer:
+    build: images/producer
+    hostname: "producer"
+    tty: true
+    environment: 
+      - KAFKA_SERVER=kafka:29092
+    volumes:
+      - ./src/data_generators:/opt/app/data_generators
+      - ./src/dummy_data:/opt/app/dummy_data
+    depends_on: 
+      - kafka
+      
+  #<------------ DATA PIPELINE WORKER ---------->
+  datapipeline_worker:
+    build: images/datapipeline_worker
+    hostname: "datapipeline_worker"
+    tty: true
+    environment: 
+      - ATLAS_HOST=atlas:21000
+      - ATLAS_USER=${ATLAS_USER}
+      - ATLAS_PASSWORD=${ATLAS_PASSWORD}
+      - SCHEMA_SERVER=http://kafka-schema-registry:8081
+      - KAFKA_SERVER=kafka:29092
+    volumes:
+      - ./src/deidentifcation_pipeline:/opt/app/deidentifcation_pipeline
+      - ./src/reidentification_pipeline:/opt/app/reidentification_pipeline
+      - ./src/custom_recognizers:/opt/app/custom_recognizers
+      - ./keys:/opt/app/keys
+    depends_on: 
+      - kafka
+      - atlas
+      - kafka-schema-registry

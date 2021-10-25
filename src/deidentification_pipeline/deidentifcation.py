@@ -169,7 +169,7 @@ def shifting(date):
     else:
         return date
         
-def job_data_pipeline(schema_name,topic_input,topic_output,key_name ):
+def deidentifcation_pipeline(schema_name,topic_input,topic_output,key_name ):
 
     print("Retrieving Key ....")
     encryption_key = retrieve_key(key_name)
