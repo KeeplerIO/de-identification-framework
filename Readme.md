@@ -226,17 +226,17 @@ Check in [Apache Atlas](https://atlas.apache.org/#/) that the schemas and their 
 
 We can see all properties, such as fields and relationships with other entities, such as [Apache Kafka](https://kafka.apache.org/) topics.
 
-![Channel Schema Properties](docs/images/channel_schema_1.png)
-![Channel Schema Relationships](docs/images/channel_schema_2.png)
+![Channel Schema Relationships](docs/images/channel_schema.png)
 
 We can navigate to one of its fields, such as **user_id**, we can see that it is identified as **type string** and as PII of type **USER_ID**, one of our **custom PII**.
 
-![User_Id Field Properties](docs/images/user_id_field_1.png)
-![User_Id Field Relationships](docs/images/user_id_field_2.png)
+![User_Id Field Relationships](docs/images/user_id_field.png)
 
 Finally, if we go to the PII **USER_ID**, we can see that it is related to the PII classification type.
 
-![User_id PII](docs/images/user_id_pii.png)
+<p align="center">
+    <img src="docs/images/user_id_pii.png" width="70%">
+</p>
 
 ### Execute de-identification pipeline
 Once we have the schemas correctly generated and we have made corrections if necessary on [Apache Atlas](https://atlas.apache.org/#/), we proceed to use this information to de-identify the data.
