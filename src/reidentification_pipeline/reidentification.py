@@ -1,35 +1,16 @@
-from kafka import KafkaConsumer, KafkaProducer, errors
 from time import sleep
 from datetime import datetime, timedelta
 
-from presidio_analyzer import DeanonymizeEngine, RecognizerRegistry
-
-from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities.engine import AnonymizerResult, OperatorConfig
-from presidio_anonymizer.entities import RecognizerResult
 
-from confluent_kafka import Producer
-from confluent_kafka import SerializingProducer
-from confluent_kafka.serialization import StringSerializer
 from confluent_kafka.schema_registry import SchemaRegistryClient
-from confluent_kafka.schema_registry.avro import AvroSerializer
-
 from confluent_kafka import DeserializingConsumer
 from confluent_kafka.schema_registry.avro import AvroDeserializer
 from confluent_kafka.serialization import StringDeserializer
 
-import sys
-sys.path.append('/opt/app/custom_recognizers/user_recognizer')
-import user_recognizer
-sys.path.append('/opt/app/custom_recognizers/custom_card_recognizer')
-import custom_card_recognizer
-
 from uuid import uuid4
-
 import json
-
 import os
-
 import requests
 
 from cryptography.fernet import Fernet
@@ -51,27 +32,17 @@ def create_avro_consumer(kafka_servers, avro_deserializer, topic):
             consumer_conf = {'bootstrap.servers': ",".join(kafka_servers),
                             'key.deserializer': string_deserializer,
                             'value.deserializer': avro_deserializer,
-                            'auto.offset.reset': "earliest"
+                            'auto.offset.reset': "earliest",
+                            'group.id': str(uuid4()),
                             }
+                            
+            print(consumer_conf)
 
             consumer = DeserializingConsumer(consumer_conf)
             consumer.subscribe([topic])
             print("Connected to Kafka")
             return consumer
         except :
-            print("Waiting for brokers to become available")
-            sleep(20)
-
-    raise RuntimeError("Failed to connect to brokers within 60 seconds")
-
-def create_producer(servers):
-    for i in range(0, 10):
-        try:
-            producer = KafkaProducer(bootstrap_servers=servers,
-                            value_serializer=lambda x: json.dumps(x).encode('utf-8'))
-            print("Producer connected to Kafka")
-            return producer
-        except errors.NoBrokersAvailable:
             print("Waiting for brokers to become available")
             sleep(20)
 
@@ -153,9 +124,6 @@ def deserializer_function(message, ctx):
 def retrieve_key(key_name):
     return open("/opt/app/keys/"+key_name, "rb").read()
 
-def encrypt(str, key):
-    return Fernet(key).encrypt(str.encode()).decode()
-
 def decrypt(str, key):
     return Fernet(key).decrypt(str.encode()).decode()
 
@@ -176,64 +144,79 @@ def shifting(date):
     else:
         return date
         
-def job_data_pipeline(schema_name,topic_input,topic_output,key_name ):
+        
+def deanonymizer(text, entities, operators):
+
+    for entity in entities:
+        operator = None
+        if entity['entity_type'] in operators.keys():
+            operator = operators[entity['entity_type']]
+
+        if operator is not  None:
+            return operator(text[entity['start']:entity['end']])
+            
+    #No re-identification method available
+    return text
+    
+        
+def job_reidentification_pipeline(schema_name,topic_input,key_name ):
 
     print("Retrieving Key ....")
     encryption_key = retrieve_key(key_name)
-    print(encryption_key)
 
     print("Retrieving Schema ....")
     schema = retrieve_schema(schema_name)
-    print(schema)
 
-    schema_registry_client = SchemaRegistryClient({'url': SCHEMA_SERVER})
+    sr_conf = {'url': SCHEMA_SERVER}
+    schema_registry_client = SchemaRegistryClient(sr_conf)
 
     print("Creating Avro Deserializer ...")
-    avro_deserializer = AvroDeserializer(schema_str=json.dumps(schema),
-                                         schema_registry_client=schema_registry_client,
-                                         to_dict=deserializer_function)
-
-    consumer = create_avro_consumer([KAFKA_SERVER], avro_deserializer)
-
-    producer = create_producer([KAFKA_SERVER], topic_input)
+    avro_deserializer = AvroDeserializer(schema_str=json.dumps(schema), schema_registry_client=schema_registry_client)
+                                         
+    print("Connecting Kafka")
+    consumer = create_avro_consumer([KAFKA_SERVER], avro_deserializer, topic_input)
 
     print("Extracting metadata PII information ...")
     pii_per_field = get_pii_entities_types(schema)
-    print(pii_per_field)
 
-    print("Creating Presidio DeanonymizeEngine ....")
-    deanonymizer = DeanonymizeEngine()
-
-    # for message in consumer:
-    #     for key in message.value.keys():
-    #         pii_entities = pii_per_field[key]
-    #         if len(pii_entities):
-    #             analyzer_results=None
-    #             if len(pii_entities) > 1: # Free text field
-    #                 ## Outside the purpose of the demo.
-    #                 ### The analysis of the free text fields during the de-identification process should be saved for later reversal.
-    #                 ### Another way would be to use predefined masks according to the type of PII and then parse the free text field.
-    #                 #### For example John Smith -> PERSON-dbcbcf7f7af8f851538eef7b8e58c5bee0b8cfdac4a
-    #                 #### Where PERSON is the type of PII, followed by the encrypted value
-    #                 analyzer_results = []
-    #             else:
-    #                 analyzer_results=[
-    #                     AnonymizerResult(entity_type=pii_entities[0], start=0, end=len(str(message.value[key])) )
-    #                 ]
-    #             anonymized_result = deanonymizer.anonymize(
-    #                 text=str(message.value[key]),
-    #                 analyzer_results=analyzer_results,
-    #                 operators={
-    #                     # The De-Identification methods based on hashing are reversible only using brute force
-    #                     "USER_ID": OperatorConfig("custom", {"lambda":  lambda x: decrypt(x, encryption_key)}),
-    #                     "DATE_TIME" : OperatorConfig("custom",{"lambda": lambda x: shifting(x)}),
-    #                     #"CREDIT_CARD" : OperatorConfig("hash", {"hash_type": "sha256" }),
-    #                     #"CUSTOM_CREDIT_CARD" : OperatorConfig("hash", {"hash_type": "sha256" }),
-    #                     "DOMAIN_NAME" : OperatorConfig("custom", {"lambda": lambda x: x }),
-    #                     # "PHONE_NUMBER" : OperatorConfig("hash", {"hash_type": "sha256" }),
-    #                 }
-    #             ).to_json()
-    #             message.value[key] = json.loads(anonymized_result)['text']
-
-    #     print(message.value)
-    #     producer.produce(topic_output, key=str(uuid4()), value=message.value)
+    while True:
+        message=consumer.poll(timeout=2.0)
+        if message is not None:
+            msg_value = message.value()
+            for key in msg_value.keys():
+                pii_entities = pii_per_field[key]
+                if len(pii_entities):
+                    analyzer_results=None
+                    if len(pii_entities) > 1: # Free text field
+                        ## Outside the purpose of the demo.
+                        ### The analysis of the free text fields during the de-identification process should be saved for later reversal.
+                        ### Another way would be to use predefined masks according to the type of PII and then parse the free text field.
+                        #### For example John Smith -> PERSON-dbcbcf7f7af8f851538eef7b8e58c5bee0b8cfdac4a
+                        #### Where PERSON is the type of PII, followed by the encrypted value
+                        analyzer_results = []
+                    else:
+                        analyzer_results=[
+                            { "start":0, "end":len(str(msg_value[key])), "entity_type":pii_entities[0] }
+                        ]
+                        
+                    #As Presidio only allows to make one of its deanonymizer function with decrypt, we change this part to a custom function.
+                    deanonymized_result = deanonymizer(
+                        text=str(msg_value[key]),
+                        entities=analyzer_results,
+                        operators={
+                            # The De-Identification methods based on hashing are reversible only using brute force
+                            "USER_ID": lambda x: decrypt(x, encryption_key),
+                            "DATE_TIME" : lambda x : shifting(x),
+                            #"CREDIT_CARD" : OperatorConfig("hash", {"hash_type": "sha256" }), # only brute force
+                            #"CUSTOM_CREDIT_CARD" : OperatorConfig("hash", {"hash_type": "sha256" }), # only brute force
+                            "DOMAIN_NAME" : lambda x: x,
+                            # "PHONE_NUMBER" : OperatorConfig("hash", {"hash_type": "sha256" }), # only brute force
+                        }
+                    )
+                    
+                    msg_value[key] = deanonymized_result
+    
+            # The data de-identification method must be well chosen, 
+            # taking into account possible future re-identification, 
+            # since for example methods based on hashes or single-value substitutions make backtracking impossible.
+            print(msg_value)
