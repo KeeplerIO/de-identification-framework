@@ -233,9 +233,7 @@ We can navigate to one of its fields, such as **user_id**, we can see that it is
 
 Finally, if we go to the PII **USER_ID**, we can see that it is related to the PII classification type.
 
-<p align="center">
-    <img src="docs/images/user_id_pii.png" width="70%">
-</p>
+![User_Id PII](docs/images/user_id_pii.png)
 
 ### Execute de-identification pipeline
 Once we have the schemas correctly generated and we have made corrections if necessary on [Apache Atlas](https://atlas.apache.org/#/), we proceed to use this information to de-identify the data.
