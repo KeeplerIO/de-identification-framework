@@ -79,7 +79,7 @@ def get_field_type_guid(field_type):
         if "entities" in r.json():
             return r.json()["entities"][0]["guid"]
         else:
-            return create_entity(field_type)
+            return create_entity({"name": field_type, "qualifiedName": field_type})
     else:
         raise Exception('Something went wrong when retrieving field type information from Atlas')
         
