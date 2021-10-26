@@ -275,7 +275,7 @@ Finally you can check the messages in the output topics, for example in the **ch
 {'channel_name': 'Disney Channel', 'tv_show': '<PERSON>', 'tv_show_type': 'Comedy', 'date': '13-10-2020', 'user_id': 'gAAAAABhcXeqEuYw2LKNcczosz93fiJY4yN5CiVFwtT53FIAMDchFscFcVLmxcpkzt3rCmART-oGzvqDluHsAgNGh8W73pfvUQ=='}
 ```
 
-You may notice that in some cases, Presidio](https://microsoft.github.io/presidio/) identified some tv show names as **PII** of type **PERSON**, 
+You may notice that in some cases, [Presidio](https://microsoft.github.io/presidio/) identified some tv show names as **PII** of type **PERSON**, 
 such as.
 
 ```
