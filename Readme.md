@@ -292,6 +292,8 @@ This is why it is **IMPORTANT TO REVIEW** the schema inferred in [Apache Atlas](
 The last functionality that remains to be demonstrated is the reverse process, or how to return the data to its original state.
 This is what is called the re-identification of the data.
 
+![Re Identification](docs/images/re-identification.png)
+
 You can find these scripts in the src/reidentification_pipeline folder. To execute them we are going to use the datapipeline_worker container.
 
 For this process, we have not used Presidio, since the re-identification part or as he calls deanonymization is very unversatile, but nevertheless we have followed a similar approach.
