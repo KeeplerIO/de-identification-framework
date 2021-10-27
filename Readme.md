@@ -351,6 +351,8 @@ Finally you can check the the output messages, for example in the **channel data
 
 It is worth mentioning that during the de-identification process different methods were chosen depending on the type of PII, for example for **CREDIT_CARD** we used the method of hashing the value with sha256, which is only reversible by brute force.
 
+Another possible solution is to have a key-value database in which to store the relationship of a hash to its original value.
+
 This is why it is **important** to **choose well the de-identification method** you want to use to make sure that if you need to recover the original data at some point you will not encounter such a problem.
 
 ## Authors
