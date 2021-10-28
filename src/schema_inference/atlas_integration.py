@@ -13,8 +13,6 @@ def create_entity(entity):
     if r.status_code == 200:
         return r.json()["guidAssignments"]["-1"]
     else:
-        print(ATLAS_URI,ATLAS_USER,ATLAS_PASSWORD)
-        print(r.status_code)
         print(r.text)
         raise Exception('Something went wrong when creating a new entity in Atlas')
 
@@ -79,7 +77,9 @@ def get_field_type_guid(field_type):
         if "entities" in r.json():
             return r.json()["entities"][0]["guid"]
         else:
-            return create_entity({"name": field_type, "qualifiedName": field_type})
+            return create_field_type(field_type)
+    elif r.status_code == 400:
+            return create_field_type(field_type)
     else:
         raise Exception('Something went wrong when retrieving field type information from Atlas')
         
