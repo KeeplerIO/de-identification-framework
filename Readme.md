@@ -123,6 +123,8 @@ e60717eeb2a3   confluentinc/cp-kafka:5.4.0             "/etc/confluent/dock…" 
 5625f65b8296   wurstmeister/zookeeper:3.4.6            "/bin/sh -c '/usr/sb…"   2 weeks ago   Up 10 seconds
 ```
 
+> The **first time** you run it, it will take a while, since Apache Atlas has to create its internal database. It may take 5-10 minutes, depending on the power of your host.
+
 ### Setup Apache Kafka
 For the purpose of the demo we need to have several [Apache Kafka](https://kafka.apache.org/) topics created.
 To do this, run the file `create-kafka-topics.sh`
