@@ -6,7 +6,7 @@ This technical demo is related to the following articles series published by [Ke
 
 * [Part 1: Foundations](https://keepler.io/2021/09/european-data-security-and-privacy-compliance-part-1-foundations/)
 * [Part 2: Case Studies in Business Environments](https://keepler.io/2021/10/meet-european-data-security-and-privacy-compliance-with-big-data-analytics-in-public-cloud-environments-part-2-case-studies-in-business-environments/)
-* [Part 3: De-identification Framework via Open Source](#)TODO
+* [Part 3: De-identification Framework via Open Source](https://keepler.io/2021/10/meet-european-data-security-and-privacy-compliance-with-big-data-analytics-in-public-cloud-environments-part-3-de-identification-framework-via-open-source/)
 
 It is advisable to read the articles beforehand to understand the problems to be solved and the proposed framework. 
 
