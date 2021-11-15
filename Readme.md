@@ -38,7 +38,7 @@ In addition, it allows us to perform joins, aggregations, filters, and transform
 
 Finally we have a large number of diverse libraries in all the predominant programming languages.
 
-#### Apache ZooKeepler
+#### Apache ZooKeeper
 
 [Apache Kafka](https://kafka.apache.org/) uses [Apache Zookeeper](https://zookeeper.apache.org/) to do leadership election of Kafka Broker and Topic Partition pairs. 
 
